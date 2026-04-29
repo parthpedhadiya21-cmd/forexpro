@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexPro - Investment Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #0099cc;
+            --bg-dark: #0a0e27;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #00ff88;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px var(--primary); }
+            50% { text-shadow: 0 0 20px var(--primary), 0 0 30px var(--secondary); }
+        }
+
+        .animate-fade { animation: fadeIn 0.5s ease-out; }
+        .animate-slide { animation: slideIn 0.5s ease-out; }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 14, 39, 0.95);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .user-badge {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, var(--danger), #cc0000);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, var(--success), #00cc66);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, var(--warning), #cc8800);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            max-width: 450px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .auth-card p {
+            color: #a0a0a0;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .credentials-box {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .credentials-box h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .cred-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive { color: var(--success); }
+        .negative { color: var(--danger); }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .content-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Deposit Section */
+        .deposit-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .deposit-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .deposit-option:hover, .deposit-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .deposit-option .crypto-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .deposit-option h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .deposit-option p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        /* QR Code Placeholder */
+        .qr-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+
+        .wallet-address {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Transaction History */
+        .transaction-list {
+            margin-top: 1rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        .transaction-item.deposit { border-left-color: var(--success); }
+        .transaction-item.withdraw { border-left-color: var(--danger); }
+
+        .tx-info h4 {
+            margin-bottom: 0.2rem;
+        }
+
+        .tx-info p {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        .tx-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Trading Section */
+        . trading-pairs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .pair-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pair-card:hover {
+            border-color: var(--primary);
+        }
+
+        .pair-name {
+            font-weight: bold;
+        }
+
+        .pair-price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .pair-change {
+            font-size: 0.85rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            max-width: 350px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+
+        /* Admin Panel */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table th {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-success { background: rgba(0, 255, 136, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(255, 170, 0, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(255, 68, 68, 0.2); color: var(--danger); }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stats-grid, .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Utility */
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .hidden { display: none !important; }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 5% 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f4b 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .features {
+            padding: 4rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #a0a0a0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">💱 ForexPro</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="showPage('home')" id="navHome">Home</a></li>
+                <li><a onclick="showPage('dashboard')" id="navDashboard" class="hidden">Dashboard</a></li>
+                <li><a onclick="showPage('deposit')" id="navDeposit" class="hidden">Deposit</a></li>
+                <li><a onclick="showPage('trading')" id="navTrading" class="hidden">Trading</a></li>
+                <li><a onclick="showPage('history')" id="navHistory" class="hidden">History</a></li>
+                <li><a onclick="logout()" id="navLogout" class="hidden btn btn-outline" style="padding: 0.5rem 1rem;">Logout</a></li>
+                <li><a onclick="showPage('login')" id="navLogin">Login</a></li>
+                <li><a onclick="showPage('register')" id="navRegister" class="btn" style="padding: 0.5rem 1rem;">Register</a></li>
+            </ul>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div id="toastMessage"></div>
+    </div>
+
+    <!-- ==================== HOME PAGE ==================== -->
+    <div class="page active" id="pageHome">
+        <div class="hero">
+            <h1>Master Forex Trading</h1>
+            <p>Start your investment journey with secure USDT deposits, real-time trading, and advanced analytics.</p>
+            <button class="btn" onclick="showPage('register')">Get Started</button>
+        </div>
+
+        <div class="features">
+            <h2 class="text-center" style="color: var(--primary); font-size: 2rem;">Why Choose ForexPro?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>USDT Deposits</h3>
+                    <p>Secure cryptocurrency deposits with instant confirmation system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Live Trading</h3>
+                    <p>Real-time forex pairs with competitive spreads and instant execution.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Secure Accounts</h3>
+                    <p>Unique ID system with encrypted local storage for maximum security.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Profit Calculator</h3>
+                    <p>Advanced tools to calculate potential returns before you trade.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== REGISTER PAGE ==================== -->
+    <div class="page" id="pageRegister">
+        <div class="auth-container">
+            <div class="auth-card animate-fade">
+                <h2>📝 Create Account</h2>
+                <p>Join thousands of traders worldwide</p>
+                
+                <div id="registerForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-input" id="regName" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" class="form-input" id="regEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" class="form-input" id="regPhone" placeholder="+1 234 567 890">
+                    </div>
+                    <button class="btn" style="width: 100%;" onclick="registerUser()">Create Account</button>
+                </div>
+
+                <div id="registerSuccess" class="hidden">
+                    <div class="credentials-box animate-fade">
+                        <h3>🎉 Account Created Successfully!</h3>
+                        <p style="color: #a0a0a0; margin-bottom: 1rem;">Save these credentials safely. You cannot recover them!</p>
+                        
+                        <div style="text-align: left;">
+                            <div class="form-group">
+                                <label>Your Unique ID</label>
+                                <div class="cred-item">
+                                    <span id="newUserId"></span>
+                                    <button class="copy-btn" onclick="copyToClipboard('newUserId')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Your Password</label>
+                                <div class="cred-item">
+                                    <span id="newPassword"></span>
+                                    <button class="copy-btn" onclick="copyToClipboard('newPassword')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box mt-1">
+                            <h4>⚠️ Important</h4>
+                            <p>Please screenshot or write down these credentials. They cannot be recovered if lost!</p>
+                        </div>
+                        
+                        <button class="btn mt-2" onclick="showPage('login')">Go to Login</button>
+                    </div>
+                </div>
+
+                <p class="mt-2" style="color: #a0a0a0;">
+                    Already have an account? <a onclick="showPage('login')" style="color: var(--primary); cursor: pointer;">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div class="page" id="pageLogin">
+        <div class="auth-container">
+            <div class="auth-card animate-fade">
+                <h2>🔐 Login</h2>
+                <p>Access your trading dashboard</p>
+                
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" class="form-input" id="loginUserId" placeholder="Enter your User ID">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password">
+                </div>
+                
+                <button class="btn" style="width: 100%;" onclick="loginUser()">Login</button>
+                
+                <p class="mt-2" style="color: #a0a0a0;">
+                    Don't have an account? <a onclick="showPage('register')" style="color: var(--primary); cursor: pointer;">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD PAGE ==================== -->
+    <div class="page" id="pageDashboard">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Welcome back, <span id="dashName">Trader</span>! 👋</h1>
+                    <p style="color: #a0a0a0;">ID: <span id="dashId"></span></p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn" onclick="showPage('deposit')">💰 Deposit</button>
+                    <button class="btn btn-outline" onclick="showPage('trading')">📈 Trade Now</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Balance</div>
+                    <div class="stat-value" id="totalBalance">$0.00</div>
+                    <div class="stat-change positive">Available for trading</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Investments</div>
+                    <div class="stat-value" id="activeInvestments">$0.00</div>
+                    <div class="stat-change">Currently invested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Profit/Loss</div>
+                    <div class="stat-value" id="totalProfit">$0.00</div>
+                    <div class="stat-change positive" id="profitChange">+0.00%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Trades</div>
+                    <div class="stat-value" id="totalTrades">0</div>
+                    <div class="stat-change">Completed trades</div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>📊 Market Overview</h3>
+                    <div id="marketOverview" style="margin-top: 1rem;">
+                        <div class="pair-card">
+                            <div>
+                                <div class="pair-name">EUR/USD</div>
+                                <div class="pair-change positive">+0.25%</div>
+                            </div>
+                            <div class="pair-price">1.0845</div>
+                        </div>
+                        <div class="pair-card">
+                            <div>
+                                <div class="pair-name">GBP/USD</div>
+                                <div class="pair-change negative">-0.15%</div>
+                            </div>
+                            <div class="pair-price">1.2678</div>
+                        </div>
+                        <div class="pair-card">
+                            <div>
+                                <div class="pair-name">USD/JPY</div>
+                                <div class="pair-change positive">+0.42%</div>
+                            </div>
+                            <div class="pair-price">149.32</div>
+                        </div>
+                        <div class="pair-card">
+                            <div>
+                                <div class="pair-name">XAU/USD</div>
+                                <div class="pair-change positive">+0.85%</div>
+                            </div>
+                            <div class="pair-price">2,345.60</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📋 Recent Activity</h3>
+                    <div id="recentActivity" style="margin-top: 1rem;">
+                        <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DEPOSIT PAGE ==================== -->
+    <div class="page" id="pageDeposit">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>💰 Deposit Funds</h1>
+                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Choose Payment Method</h3>
+                    <div class="deposit-options">
+                        <div class="deposit-option selected" onclick="selectDepositMethod(this, 'usdt')">
+                            <div class="crypto-icon">💎</div>
+                            <h4>USDT (TRC20)</h4>
+                            <p>Low fees, fast</p>
+                        </div>
+                        <div class="deposit-option" onclick="selectDepositMethod(this, 'usdt_erc')">
+                            <div class="crypto-icon">💎</div>
+                            <h4>USDT (ERC20)</h4>
+                            <p>Ethereum network</p>
+                        </div>
+                        <div class="deposit-option" onclick="selectDepositMethod(this, 'btc')">
+                            <div class="crypto-icon">₿</div>
+                            <h4>Bitcoin</h4>
+                            <p>Secure, widely used</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <div class="form-group">
+                            <label>Deposit Amount (USD)</label>
+                            <input type="number" class="form-input" id="depositAmount" placeholder="Min $10" min="10">
+                        </div>
+                        
+                        <div class="info-box">
+                            <h4>📋 Payment Instructions</h4>
+                            <p>1. Enter amount above</p>
+                            <p>2. Copy the wallet address</p>
+                            <p>3. Send exact amount from your wallet</p>
+                            <p>4. Click "I have paid" after sending</p>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <div class="qr-container">
+                                <canvas id="qrCanvas" width="200" height="200"></canvas>
+                            </div>
+                            
+                            <div class="wallet-address" id="walletAddress">
+                                TXYZ1234567890ABCDEF1234567890ABCDEF12
+                            </div>
+                            <button class="copy-btn" onclick="copyToClipboard('walletAddress')">Copy Address</button>
+                        </div>
+
+                        <button class="btn btn-success" style="width: 100%; margin-top: 1rem;" onclick="confirmDeposit()">
+                            ✅ I Have Paid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📋 Deposit History</h3>
+                    <div id="depositHistory">
+                        <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No deposits yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TRADING PAGE ==================== -->
+    <div class="page" id="pageTrading">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>📈 Live Trading</h1>
+                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Available Pairs</h3>
+                    <div id="tradingPairs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>Quick Trade</h3>
+                    <div class="form-group">
+                        <label>Select Pair</label>
+                        <select class="form-input" id="tradePair">
+                            <option>EUR/USD</option>
+                            <option>GBP/USD</option>
+                            <option>USD/JPY</option>
+                            <option>XAU/USD</option>
+                            <option>USD/CHF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount ($)</label>
+                        <input type="number" class="form-input" id="tradeAmount" placeholder="Enter amount">
+                    </div>
+                    <div class="form-group">
+                        <label>Direction</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-success" style="flex: 1;" onclick="placeTrade('buy')">📈 BUY</button>
+                            <button class="btn btn-danger" style="flex: 1;" onclick="placeTrade('sell')">📉 SELL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== HISTORY PAGE ==================== -->
+    <div class="page" id="pageHistory">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>📋 Transaction History</h1>
+                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
+            </div>
+
+            <div class="content-card">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button class="btn btn-outline" onclick="filterHistory('all')">All</button>
+                    <button class="btn btn-outline" onclick="filterHistory('deposit')">Deposits</button>
+                    <button class="btn btn-outline" onclick="filterHistory('trade')">Trades</button>
+                </div>
+                <div id="fullHistory">
+                    <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN PAGE ==================== -->
+    <div class="page" id="pageAdmin">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>🔧 Admin Panel</h1>
+                <button class="btn btn-outline" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="adminTotalUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Deposits</div>
+                    <div class="stat-value" id="adminTotalDeposits">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Deposits</div>
+                    <div class="stat-value" id="adminPendingDeposits">0</div>
+                </div>
+            </div>
+
+            <div class="content-card mt-2">
+                <h3>All Users</h3>
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-card mt-2">
+                <h3>Pending Deposits</h3>
+                <div id="adminPendingList">
+                    <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No pending deposits</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Title</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA STORAGE ====================
+        // In-memory storage (resets on page reload for demo)
+        // In production, use localStorage with encryption
+        
+        let users = JSON.parse(localStorage.getItem('forex_users')) || {};
+        let transactions = JSON.parse(localStorage.getItem('forex_transactions')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('forex_currentUser')) || null;
+        
+        // Admin credentials (hardcoded for demo)
+        const ADMIN_ID = 'ADMIN001';
+        const ADMIN_PASS = 'admin@123';
+
+        // Demo wallet addresses
+        const WALLETS = {
+            usdt: 'TXYZ1234567890ABCDEF1234567890ABCDEF12',
+            usdt_erc: '0x1234567890ABCDEF1234567890ABCDEF123456',
+            btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+        };
+
+        // ==================== UTILITY FUNCTIONS ====================
+        
+        function generateId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = 'FX';
+            for (let i = 0; i < 8; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+            let pass = '';
+            for (let i = 0; i < 12; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return pass;
+        }
+
+        function formatCurrency(amount) {
+            return '$' + parseFloat(amount).toFixed(2);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('forex_users', JSON.stringify(users));
+            localStorage.setItem('forex_transactions', JSON.stringify(transactions));
+            if (currentUser) {
+                localStorage.setItem('forex_currentUser', JSON.stringify(currentUser));
+            } else {
+                localStorage.removeItem('forex_currentUser');
+            }
+        }
+
+        // ==================== NAVIGATION ====================
+        
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Show requested page
+            const page = document.getElementById('page' + pageName.charAt(0).toUpperCase() + pageName.slice(1));
+            if (page) page.classList.add('active');
+            
+            // Update nav
+            updateNavigation();
+            
+            // Page specific init
+            if (pageName === 'dashboard') initDashboard();
+            if (pageName === 'deposit') initDeposit();
+            if (pageName === 'trading') initTrading();
+            if (pageName === 'history') initHistory();
+            if (pageName === 'admin') initAdmin();
+            
+            window.scrollTo(0, 0);
+        }
+
+        function updateNavigation() {
+            const isLoggedIn = currentUser !== null;
+            const isAdmin = currentUser && currentUser.id === ADMIN_ID;
+            
+            document.getElementById('navHome').classList.toggle('hidden', isLoggedIn && !isAdmin);
+            document.getElementById('navDashboard').classList.toggle('hidden', !isLoggedIn || isAdmin);
+            document.getElementById('navDeposit').classList.toggle('hidden', !isLoggedIn || isAdmin);
+            document.getElementById('navTrading').classList.toggle('hidden', !isLoggedIn || isAdmin);
+            document.getElementById('navHistory').classList.toggle('hidden', !isLoggedIn || isAdmin);
+            document.getElementById('navLogout').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('navLogin').classList.toggle('hidden', isLoggedIn);
+            document.getElementById('navRegister').classList.toggle('hidden', isLoggedIn);
+        }
+
+        // ==================== AUTH FUNCTIONS ====================
+        
+        function registerUser() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            
+            if (!name || !email || !phone) {
+                showToast('Please fill all fields!', 'error');
+                return;
+            }
+            
+            const userId = generateId();
+            const password = generatePassword();
+            
+            users[userId] = {
+                id: userId,
+                name: name,
+                email: email,
+                phone: phone,
+                password: password,
+                balance: 0,
+                invested: 0,
+                profit: 0,
+                trades: 0,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+            
+            saveData();
+            
+            // Show credentials
+            document.getElementById('newUserId').textContent = userId;
+            document.getElementById('newPassword').textContent = password;
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('registerSuccess').classList.remove('hidden');
+            
+            showToast('Account created successfully!');
+        }
+
+        function loginUser() {
+            const userId = document.getElementById('loginUserId').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!userId || !password) {
+                showToast('Please enter both User ID and Password!', 'error');
+                return;
+            }
+            
+            // Admin login
+            if (userId === ADMIN_ID && password === ADMIN_PASS) {
+                currentUser = {
+                    id: ADMIN_ID,
+                    name: 'Administrator',
+                    isAdmin: true
+                };
+                saveData();
+                showToast('Welcome Admin!');
+                showPage('admin');
+                return;
+            }
+            
+            // User login
+            const user = users[userId];
+            if (user && user.password === password) {
+                currentUser = user;
+                saveData();
+                showToast('Welcome back, ' + user.name + '!');
+                showPage('dashboard');
+            } else {
+                showToast('Invalid User ID or Password!', 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            saveData();
+            showToast('Logged out successfully!');
+            showPage('home');
+        }
+
+        // ==================== DASHBOARD ====================
+        
+        function initDashboard() {
+            if (!currentUser || currentUser.isAdmin) return;
+            
+            document.getElementById('dashName').textContent = currentUser.name;
+            document.getElementById('dashId').textContent = currentUser.id;
+            document.getElementById('totalBalance').textContent = formatCurrency(currentUser.balance);
+            document.getElementById('activeInvestments').textContent = formatCurrency(currentUser.invested);
+            document.getElementById('totalProfit').textContent = formatCurrency(currentUser.profit);
+            document.getElementById('totalTrades').textContent = currentUser.trades;
+            
+            // Update profit color
+            const profitEl = document.getElementById('totalProfit');
+            const changeEl = document.getElementById('profitChange');
+            if (currentUser.profit >= 0) {
+                profitEl.style.color = 'var(--success)';
+                changeEl.className = 'stat-change positive';
+                changeEl.textContent = '+' + ((currentUser.profit / (currentUser.invested || 1)) * 100).toFixed(2) + '%';
+            } else {
+                profitEl.style.color = 'var(--danger)';
+                changeEl.className = 'stat-change negative';
+                changeEl.textContent = ((currentUser.profit / (currentUser.invested || 1)) * 100).toFixed(2) + '%';
+            }
+            
+            // Recent activity
+            const userTx = transactions.filter(t => t.userId === currentUser.id).slice(-5);
+            const activityDiv = document.getElementById('recentActivity');
+            
+            if (userTx.length === 0) {
+                activityDiv.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No recent activity</p>';
+            } else {
+                activityDiv.innerHTML = userTx.map(t => `
+                    <div class="transaction-item ${t.type}">
+                        <div class="tx-info">
+                            <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade' : '💸 Withdrawal'}</h4>
+                            <p>${new Date(t.date).toLocaleDateString()}</p>
+                        </div>
+                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
+                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ==================== DEPOSIT ====================
+        
+        let selectedMethod = 'usdt';
+        
+        function selectDepositMethod(el, method) {
+            document.querySelectorAll('.deposit-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedMethod = method;
+            
+            // Update wallet address
+            document.getElementById('walletAddress').textContent = WALLETS[method];
+            
+            // Generate new QR
+            generateQR(WALLETS[method]);
+        }
+
+        function generateQR(text) {
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Simple visual representation (not real QR)
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.fillStyle = 'black';
+            
+            // Draw a pattern that looks like QR
+            const size = 20;
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    if (Math.random() > 0.5) {
+                        ctx.fillRect(i * size + 10, j * size + 10, size - 2, size - 2);
+                    }
+                }
+            }
+            
+            // Draw position markers
+            ctx.fillRect(10, 10, 50, 50);
+            ctx.fillRect(140, 10, 50, 50);
+            ctx.fillRect(10, 140, 50, 50);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(20, 20, 30, 30);
+            ctx.fillRect(150, 20, 30, 30);
+            ctx.fillRect(20, 150, 30, 30);
+        }
+
+        function initDeposit() {
+            if (!currentUser) return;
+            document.getElementById('walletAddress').textContent = WALLETS.usdt;
+            generateQR(WALLETS.usdt);
+            updateDepositHistory();
+        }
+
+        function confirmDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            
+            if (!amount || amount < 10) {
+                showToast('Minimum deposit is $10!', 'error');
+                return;
+            }
+            
+            const tx = {
+                id: 'TX' + Date.now(),
+                userId: currentUser.id,
+                type: 'deposit',
+                amount: amount,
+                method: selectedMethod,
+                status: 'pending',
+                date: new Date().toISOString(),
+                wallet: WALLETS[selectedMethod]
+            };
+            
+            transactions.push(tx);
+            saveData();
+            
+            showToast('Deposit request submitted! Admin will verify shortly.');
+            updateDepositHistory();
+            document.getElementById('depositAmount').value = '';
+        }
+
+        function updateDepositHistory() {
+            const userDeposits = transactions.filter(t => t.userId === currentUser.id && t.type === 'deposit');
+            const div = document.getElementById('depositHistory');
+            
+            if (userDeposits.length === 0) {
+                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No deposits yet</p>';
+                return;
+            }
+            
+            div.innerHTML = userDeposits.slice(-10).reverse().map(d => `
+                <div class="transaction-item deposit">
+                    <div class="tx-info">
+                        <h4>💰 ${d.method.toUpperCase()} Deposit</h4>
+                        <p>${new Date(d.date).toLocaleString()}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="tx-amount positive">+${formatCurrency(d.amount)}</div>
+                        <span class="badge ${d.status === 'completed' ? 'badge-success' : d.status === 'pending' ? 'badge-warning' : 'badge-danger'}">
+                            ${d.status}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== TRADING ====================
+        
+        const tradingPairs = [
+            { pair: 'EUR/USD', price: 1.0845, change: 0.25 },
+            { pair: 'GBP/USD', price: 1.2678, change: -0.15 },
+            { pair: 'USD/JPY', price: 149.32, change: 0.42 },
+            { pair: 'USD/CHF', price: 0.8923, change: -0.08 },
+            { pair: 'AUD/USD', price: 0.6543, change: 0.18 },
+            { pair: 'USD/CAD', price: 1.3542, change: -0.22 },
+            { pair: 'XAU/USD', price: 2345.60, change: 0.85 },
+            { pair: 'BTC/USD', price: 67543.20, change: 2.15 }
+        ];
+
+        function initTrading() {
+            const container = document.getElementById('tradingPairs');
+            container.innerHTML = tradingPairs.map(p => `
+                <div class="pair-card" onclick="selectPair('${p.pair}')">
+                    <div>
+                        <div class="pair-name">${p.pair}</div>
+                        <div class="pair-change ${p.change >= 0 ? 'positive' : 'negative'}">
+                            ${p.change >= 0 ? '▲' : '▼'} ${Math.abs(p.change)}%
+                        </div>
+                    </div>
+                    <div class="pair-price">${p.price.toFixed(p.pair.includes('XAU') || p.pair.includes('BTC') ? 2 : 4)}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectPair(pair) {
+            document.getElementById('tradePair').value = pair;
+        }
+
+        function placeTrade(direction) {
+            const pair = document.getElementById('tradePair').value;
+            const amount = parseFloat(document.getElementById('tradeAmount').value);
+            
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount!', 'error');
+                return;
+            }
+            
+            if (amount > currentUser.balance) {
+                showToast('Insufficient balance!', 'error');
+                return;
+            }
+            
+            // Simulate trade
+            const profit = (Math.random() - 0.4) * amount * 0.1; // 60% win rate simulation
+            
+            currentUser.balance -= amount;
+            currentUser.invested += amount;
+            currentUser.profit += profit;
+            currentUser.trades += 1;
+            
+            if (profit > 0) {
+                currentUser.balance += amount + profit;
+                currentUser.invested -= amount;
+            }
+            
+            const tx = {
+                id: 'TX' + Date.now(),
+                userId: currentUser.id,
+                type: 'trade',
+                pair: pair,
+                direction: direction,
+                amount: amount,
+                profit: profit,
+                status: 'completed',
+                date: new Date().toISOString()
+            };
+            
+            transactions.push(tx);
+            saveData();
+            
+            showToast(`Trade ${direction.toUpperCase()} ${pair} completed! Profit: ${formatCurrency(profit)}`, 
+                profit >= 0 ? 'success' : 'error');
+            
+            document.getElementById('tradeAmount').value = '';
+            initDashboard();
+        }
+
+        // ==================== HISTORY ====================
+        
+        function initHistory() {
+            const userTx = transactions.filter(t => t.userId === currentUser.id).reverse();
+            const div = document.getElementById('fullHistory');
+            
+            if (userTx.length === 0) {
+                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions yet</p>';
+                return;
+            }
+            
+            div.innerHTML = userTx.map(t => `
+                <div class="transaction-item ${t.type}">
+                    <div class="tx-info">
+                        <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade ' + t.pair : '💸 Withdrawal'}</h4>
+                        <p>${new Date(t.date).toLocaleString()}</p>
+                        ${t.direction ? `<p>Direction: ${t.direction.toUpperCase()}</p>` : ''}
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
+                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
+                        </div>
+                        ${t.profit ? `<div class="${t.profit >= 0 ? 'positive' : 'negative'}">${t.profit >= 0 ? '+' : ''}${formatCurrency(t.profit)}</div>` : ''}
+                        <span class="badge ${t.status === 'completed' ? 'badge-success' : 'badge-warning'}">${t.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterHistory(type) {
+            let filtered = transactions.filter(t => t.userId === currentUser.id);
+            if (type !== 'all') {
+                filtered = filtered.filter(t => t.type === type);
+            }
+            
+            const div = document.getElementById('fullHistory');
+            if (filtered.length === 0) {
+                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions found</p>';
+                return;
+            }
+            
+            div.innerHTML = filtered.reverse().map(t => `
+                <div class="transaction-item ${t.type}">
+                    <div class="tx-info">
+                        <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade ' + t.pair : '💸 Withdrawal'}</h4>
+                        <p>${new Date(t.date).toLocaleString()}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
+                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
+                        </div>
+                        <span class="badge ${t.status === 'completed' ? 'badge-success' : 'badge-warning'}">${t.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== ADMIN PANEL ====================
+        
+        function initAdmin() {
+            if (!currentUser || !currentUser.isAdmin) {
+                showPage('home');
+                return;
+            }
+            
+            // Stats
+            document.getElementById('adminTotalUsers').textContent = Object.keys(users).length;
+            
+            const totalDeposits = transactions
+                .filter(t => t.type === 'deposit' && t.status === 'completed')
+                .reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('adminTotalDeposits').textContent = formatCurrency(totalDeposits);
+            
+            const pending = transactions.filter(t => t.type === 'deposit' && t.status === 'pending').length;
+            document.getElementById('adminPendingDeposits').textContent = pending;
+            
+            // Users table
+            const tbody = document.getElementById('adminUsersTable');
+            tbody.innerHTML = Object.values(users).map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${formatCurrency(u.balance)}</td>
+                    <td><span class="badge badge-success">${u.status}</span></td>
+                    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+            
+            // Pending deposits
+            const pendingDiv = document.getElementById('adminPendingList');
+            const pendingTx = transactions.filter(t => t.status === 'pending');
+            
+            if (pendingTx.length === 0) {
+                pendingDiv.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No pending deposits</p>';
+            } else {
+                pendingDiv.innerHTML = pendingTx.map(t => {
+                    const u = users[t.userId];
+                    return `
+                        <div class="transaction-item deposit" style="margin-bottom: 1rem;">
+                            <div class="tx-info">
+                                <h4>💰 ${t.method.toUpperCase()} - ${u ? u.name : 'Unknown'}</h4>
+                                <p>ID: ${t.userId}</p>
+                                <p>${new Date(t.date).toLocaleString()}</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="tx-amount positive">+${formatCurrency(t.amount)}</div>
+                                <button class="btn btn-success" style="margin-top: 0.5rem; padding: 0.3rem 1rem; font-size: 0.9rem;" 
+                                    onclick="approveDeposit('${t.id}')">Approve</button>
+                                <button class="btn btn-danger" style="margin-top: 0.5rem; padding: 0.3rem 1rem; font-size: 0.9rem;" 
+                                    onclick="rejectDeposit('${t.id}')">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function approveDeposit(txId) {
+            const tx = transactions.find(t => t.id === txId);
+            if (tx) {
+                tx.status = 'completed';
+                if (users[tx.userId]) {
+                    users[tx.userId].balance += tx.amount;
+                }
+                saveData();
+                showToast('Deposit approved!');
+                initAdmin();
+            }
+        }
+
+        function rejectDeposit(txId) {
+            const tx = transactions.find(t => t.id === txId);
+            if (tx) {
+                tx.status = 'rejected';
+                saveData();
+                showToast('Deposit rejected!');
+                initAdmin();
+            }
+        }
+
+        // ==================== MODAL ====================
+        
+        function openModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // ==================== MOBILE MENU ====================
+        
+        function toggleMobileMenu() {
+            const nav = document.getElementById('navLinks');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+            nav.style.position = 'absolute';
+            nav.style.top = '60px';
+            nav.style.left = '0';
+            nav.style.right = '0';
+            nav.style.flexDirection = 'column';
+            nav.style.background = 'var(--bg-dark)';
+            nav.style.padding = '1rem';
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        window.onload = function() {
+            // Check if already logged in
+            if (currentUser) {
+                if (currentUser.isAdmin) {
+                    showPage('admin');
+                } else {
+                    // Refresh user data from storage
+                    if (users[currentUser.id]) {
+                        currentUser = users[currentUser.id];
+                        saveData();
+                    }
+                    showPage('dashboard');
+                }
+            } else {
+                showPage('home');
+            }
+        };
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
