@@ -5,1745 +5,1412 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ForexPro - Investment Platform</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #00d4ff;
-            --secondary: #0099cc;
-            --bg-dark: #0a0e27;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --secondary: #0077ff;
+            --accent: #00ffaa;
+            --bg: #060b1a;
+            --bg2: #0d1530;
+            --bg3: rgba(255,255,255,0.04);
+            --border: rgba(0,212,255,0.15);
+            --border2: rgba(255,255,255,0.08);
             --success: #00ff88;
-            --danger: #ff4444;
-            --warning: #ffaa00;
+            --danger: #ff3355;
+            --warning: #ffbb00;
+            --text: #e0eeff;
+            --muted: #6a8aaa;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-dark);
-            color: #ffffff;
+            font-family: 'Exo 2', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
-        }
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 10px var(--primary); }
-            50% { text-shadow: 0 0 20px var(--primary), 0 0 30px var(--secondary); }
-        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes glow { 0%,100% { text-shadow: 0 0 20px var(--primary); } 50% { text-shadow: 0 0 40px var(--primary), 0 0 60px var(--secondary); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes borderGlow { 0%,100%{border-color:rgba(0,212,255,0.3)} 50%{border-color:rgba(0,212,255,0.8)} }
 
-        .animate-fade { animation: fadeIn 0.5s ease-out; }
-        .animate-slide { animation: slideIn 0.5s ease-out; }
+        .fade-up { animation: fadeUp 0.5s ease-out; }
 
-        /* Navigation */
+        /* NAV */
         nav {
-            background: rgba(10, 14, 39, 0.95);
-            padding: 1rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
+            position: fixed; top:0; width:100%; z-index:1000;
+            background: rgba(6,11,26,0.95);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border);
+            padding: 0 5%;
         }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .nav-inner {
+            max-width:1400px; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            height: 64px;
         }
-
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-family:'Rajdhani',sans-serif; font-size:1.8rem; font-weight:700;
+            background: linear-gradient(90deg,var(--primary),var(--secondary));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            letter-spacing:2px;
         }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            align-items: center;
-        }
-
+        .nav-links { display:flex; gap:0.3rem; list-style:none; align-items:center; }
         .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary);
-        }
-
-        .user-badge {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-        }
-
-        .btn-danger {
-            background: linear-gradient(45deg, var(--danger), #cc0000);
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, var(--success), #00cc66);
-        }
-
-        .btn-warning {
-            background: linear-gradient(45deg, var(--warning), #cc8800);
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            padding-top: 80px;
-            min-height: 100vh;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Auth Pages */
-        .auth-container {
-            max-width: 450px;
-            margin: 3rem auto;
-            padding: 2rem;
-        }
-
-        .auth-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-        }
-
-        .auth-card h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
-
-        .auth-card p {
-            color: #a0a0a0;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #a0a0a0;
-            font-size: 0.9rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .info-box {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-            text-align: left;
-        }
-
-        .info-box h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .credentials-box {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid var(--success);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .credentials-box h3 {
-            color: var(--success);
-            margin-bottom: 1rem;
-        }
-
-        .cred-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.8rem;
-            border-radius: 8px;
-            margin: 0.5rem 0;
-            font-family: monospace;
-            font-size: 1.1rem;
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background: var(--primary);
-            border: none;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-        }
-
-        /* Dashboard */
-        .dashboard {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 5%;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .dashboard-header h1 {
-            font-size: 2rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 1.5rem;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .stat-label {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .stat-change {
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .positive { color: var(--success); }
-        .negative { color: var(--danger); }
-
-        /* Content Grid */
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .content-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 1.5rem;
-        }
-
-        .content-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Deposit Section */
-        .deposit-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .deposit-option {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .deposit-option:hover, .deposit-option.selected {
-            border-color: var(--primary);
-            background: rgba(0, 212, 255, 0.1);
-        }
-
-        .deposit-option .crypto-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .deposit-option h4 {
-            margin-bottom: 0.5rem;
-        }
-
-        .deposit-option p {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-        }
-
-        /* QR Code Placeholder */
-        .qr-container {
-            background: white;
-            padding: 1rem;
-            border-radius: 10px;
-            display: inline-block;
-            margin: 1rem 0;
-        }
-
-        .wallet-address {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: monospace;
-            word-break: break-all;
-            margin: 1rem 0;
-            border: 1px solid var(--border);
-        }
-
-        /* Transaction History */
-        .transaction-list {
-            margin-top: 1rem;
-        }
-
-        .transaction-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--primary);
-        }
-
-        .transaction-item.deposit { border-left-color: var(--success); }
-        .transaction-item.withdraw { border-left-color: var(--danger); }
-
-        .tx-info h4 {
-            margin-bottom: 0.2rem;
-        }
-
-        .tx-info p {
-            color: #a0a0a0;
-            font-size: 0.85rem;
-        }
-
-        .tx-amount {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* Trading Section */
-        . trading-pairs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .pair-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .pair-card:hover {
-            border-color: var(--primary);
-        }
-
-        .pair-name {
-            font-weight: bold;
-        }
-
-        .pair-price {
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .pair-change {
-            font-size: 0.85rem;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h3 {
-            color: var(--primary);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #a0a0a0;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .close-btn:hover {
-            color: var(--danger);
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--primary);
-            border-radius: 10px;
-            padding: 1rem 1.5rem;
-            z-index: 3000;
-            transform: translateX(150%);
-            transition: transform 0.3s;
-            max-width: 350px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--danger); }
-
-        /* Admin Panel */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .admin-table th {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .admin-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .badge-success { background: rgba(0, 255, 136, 0.2); color: var(--success); }
-        .badge-warning { background: rgba(255, 170, 0, 0.2); color: var(--warning); }
-        .badge-danger { background: rgba(255, 68, 68, 0.2); color: var(--danger); }
-
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .stats-grid, .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Utility */
-        .text-center { text-align: center; }
-        .mt-1 { margin-top: 1rem; }
-        .mt-2 { margin-top: 2rem; }
-        .mb-1 { margin-bottom: 1rem; }
-        .hidden { display: none !important; }
-
-        /* Hero Section */
+            padding:0.45rem 0.9rem; border-radius:8px; font-size:0.9rem;
+            color:var(--muted); text-decoration:none; cursor:pointer;
+            transition:all 0.2s; font-weight:500;
+        }
+        .nav-links a:hover, .nav-links a.active { color:var(--primary); background:rgba(0,212,255,0.08); }
+        .nav-btn {
+            padding:0.45rem 1.2rem; border-radius:8px;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            color:#fff !important; font-weight:600 !important;
+        }
+        .nav-btn:hover { transform:translateY(-1px); box-shadow:0 4px 15px rgba(0,212,255,0.3); }
+        .hidden { display:none !important; }
+        .mobile-btn { display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; }
+
+        /* PAGES */
+        .page { display:none; padding-top:64px; min-height:100vh; }
+        .page.active { display:block; }
+
+        /* CONTAINER */
+        .container { max-width:1400px; margin:0 auto; padding:2rem 5%; }
+
+        /* HERO */
         .hero {
-            padding: 6rem 5% 4rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f4b 100%);
+            padding: 5rem 5% 4rem;
+            background: radial-gradient(ellipse at 20% 50%, rgba(0,119,255,0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
+                        var(--bg);
+            text-align:center;
         }
-
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 2s ease-in-out infinite;
+            font-family:'Rajdhani',sans-serif; font-size:3.5rem; font-weight:700; letter-spacing:3px;
+            background:linear-gradient(135deg,var(--primary),var(--secondary),var(--accent));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            animation: glow 3s ease-in-out infinite; margin-bottom:1rem;
         }
+        .hero p { color:var(--muted); font-size:1.15rem; max-width:550px; margin:0 auto 2rem; line-height:1.7; }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #a0a0a0;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .features {
-            padding: 4rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
+        /* FEATURES */
+        .features { padding:4rem 5%; max-width:1200px; margin:0 auto; }
+        .section-title { font-family:'Rajdhani',sans-serif; font-size:2rem; color:var(--primary); text-align:center; margin-bottom:2rem; letter-spacing:2px; }
+        .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.5rem; }
         .feature-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-            text-align: center;
+            background:var(--bg3); border:1px solid var(--border2);
+            border-radius:16px; padding:2rem; text-align:center;
+            transition:all 0.3s;
+        }
+        .feature-card:hover { transform:translateY(-5px); border-color:var(--border); box-shadow:0 10px 30px rgba(0,212,255,0.1); }
+        .feature-icon { font-size:2.5rem; margin-bottom:1rem; }
+        .feature-card h3 { color:var(--primary); margin-bottom:0.8rem; font-family:'Rajdhani',sans-serif; font-size:1.3rem; }
+        .feature-card p { color:var(--muted); font-size:0.95rem; line-height:1.6; }
+
+        /* BUTTONS */
+        .btn {
+            display:inline-flex; align-items:center; gap:0.4rem;
+            padding:0.75rem 1.8rem; border-radius:10px; border:none;
+            font-family:'Exo 2',sans-serif; font-weight:600; font-size:0.95rem;
+            cursor:pointer; transition:all 0.25s; text-decoration:none;
+        }
+        .btn-primary { background:linear-gradient(135deg,var(--primary),var(--secondary)); color:#fff; }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,212,255,0.35); }
+        .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text); }
+        .btn-outline:hover { border-color:var(--primary); color:var(--primary); background:rgba(0,212,255,0.06); }
+        .btn-success { background:linear-gradient(135deg,var(--success),#00bb66); color:#000; }
+        .btn-success:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,255,136,0.3); }
+        .btn-danger { background:linear-gradient(135deg,var(--danger),#cc0033); color:#fff; }
+        .btn-warning { background:linear-gradient(135deg,var(--warning),#dd9900); color:#000; }
+        .btn-sm { padding:0.4rem 1rem; font-size:0.85rem; }
+        .btn-full { width:100%; justify-content:center; }
+
+        /* CARDS */
+        .card {
+            background:var(--bg3); border:1px solid var(--border2);
+            border-radius:16px; padding:1.5rem;
+        }
+        .card-title {
+            font-family:'Rajdhani',sans-serif; font-size:1.2rem; color:var(--primary);
+            margin-bottom:1.2rem; display:flex; align-items:center; gap:0.5rem; letter-spacing:1px;
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+        /* AUTH */
+        .auth-wrap { max-width:480px; margin:2rem auto; padding:0 1rem; }
+        .auth-card {
+            background: linear-gradient(135deg, rgba(13,21,48,0.9), rgba(6,11,26,0.95));
+            border:1px solid var(--border);
+            border-radius:20px; padding:2.5rem;
+            box-shadow: 0 20px 60px rgba(0,119,255,0.15);
+        }
+        .auth-title {
+            font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700;
+            color:var(--primary); margin-bottom:0.4rem; text-align:center; letter-spacing:2px;
+        }
+        .auth-sub { color:var(--muted); text-align:center; margin-bottom:2rem; font-size:0.95rem; }
+
+        /* FORM */
+        .form-group { margin-bottom:1.3rem; }
+        .form-label { display:block; color:var(--muted); font-size:0.85rem; margin-bottom:0.5rem; font-weight:500; letter-spacing:0.5px; }
+        .form-input {
+            width:100%; padding:0.85rem 1rem;
+            background:rgba(255,255,255,0.05); border:1px solid var(--border2);
+            border-radius:10px; color:var(--text); font-size:0.95rem;
+            font-family:'Exo 2',sans-serif; transition:all 0.2s;
+        }
+        .form-input:focus { outline:none; border-color:var(--primary); background:rgba(0,212,255,0.05); }
+        .form-input::placeholder { color:var(--muted); }
+        select.form-input option { background:var(--bg2); }
+
+        /* DIVIDER */
+        .divider { border:none; border-top:1px solid var(--border2); margin:1.5rem 0; }
+
+        /* STAT CARDS */
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.2rem; margin-bottom:1.5rem; }
+        .stat-card {
+            background:var(--bg3); border:1px solid var(--border2);
+            border-radius:14px; padding:1.4rem;
+            transition:all 0.3s; position:relative; overflow:hidden;
+        }
+        .stat-card::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,var(--primary),var(--secondary));
+        }
+        .stat-card:hover { transform:translateY(-3px); border-color:var(--border); }
+        .stat-label { color:var(--muted); font-size:0.8rem; margin-bottom:0.6rem; text-transform:uppercase; letter-spacing:1px; }
+        .stat-value { font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; color:var(--primary); }
+        .stat-sub { font-size:0.82rem; color:var(--muted); margin-top:0.4rem; }
+        .positive { color:var(--success); }
+        .negative { color:var(--danger); }
+
+        /* CONTENT GRID */
+        .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:1.5rem; }
+        .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.2rem; }
+
+        /* PROFILE BANNER */
+        .profile-banner {
+            background: linear-gradient(135deg, rgba(0,119,255,0.15), rgba(0,212,255,0.08));
+            border:1px solid var(--border);
+            border-radius:16px; padding:1.8rem;
+            display:flex; align-items:center; gap:1.5rem;
+            margin-bottom:1.5rem; flex-wrap:wrap;
+        }
+        .avatar {
+            width:64px; height:64px; border-radius:50%;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.6rem; font-weight:700; color:#fff;
+            font-family:'Rajdhani',sans-serif; flex-shrink:0;
+            border:3px solid rgba(0,212,255,0.4);
+        }
+        .profile-info h2 { font-family:'Rajdhani',sans-serif; font-size:1.6rem; letter-spacing:1px; }
+        .profile-info p { color:var(--muted); font-size:0.9rem; margin-top:0.3rem; }
+        .profile-badges { display:flex; gap:0.7rem; margin-top:0.6rem; flex-wrap:wrap; }
+
+        /* BADGES */
+        .badge {
+            padding:0.25rem 0.75rem; border-radius:20px;
+            font-size:0.78rem; font-weight:600; letter-spacing:0.5px;
+        }
+        .badge-success { background:rgba(0,255,136,0.15); color:var(--success); border:1px solid rgba(0,255,136,0.3); }
+        .badge-warning { background:rgba(255,187,0,0.15); color:var(--warning); border:1px solid rgba(255,187,0,0.3); }
+        .badge-danger { background:rgba(255,51,85,0.15); color:var(--danger); border:1px solid rgba(255,51,85,0.3); }
+        .badge-info { background:rgba(0,212,255,0.15); color:var(--primary); border:1px solid rgba(0,212,255,0.3); }
+
+        /* STATUS INDICATOR */
+        .status-dot {
+            width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px;
+        }
+        .dot-active { background:var(--success); box-shadow:0 0 8px var(--success); animation:pulse 2s infinite; }
+        .dot-inactive { background:var(--danger); }
+
+        /* INFO BOXES */
+        .info-box {
+            background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.25);
+            border-radius:10px; padding:1rem 1.2rem;
+        }
+        .info-box-title { color:var(--primary); font-weight:600; font-size:0.9rem; margin-bottom:0.5rem; }
+        .info-box p, .info-box li { color:var(--muted); font-size:0.88rem; line-height:1.7; list-style:none; }
+
+        .warn-box {
+            background:rgba(255,187,0,0.08); border:1px solid rgba(255,187,0,0.3);
+            border-radius:10px; padding:1rem 1.2rem;
+        }
+        .warn-box p { color:var(--warning); font-size:0.88rem; }
+
+        .success-box {
+            background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.3);
+            border-radius:10px; padding:1rem 1.2rem;
         }
 
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        /* CRED BOX */
+        .cred-box {
+            background:rgba(0,0,0,0.3); border:1px solid var(--border2);
+            border-radius:10px; padding:1rem; font-family:monospace;
+            font-size:1rem; word-break:break-all; position:relative;
+            display:flex; align-items:center; justify-content:space-between; gap:0.5rem;
+        }
+        .cred-box span { flex:1; }
+        .copy-mini {
+            background:rgba(0,212,255,0.2); border:1px solid var(--border);
+            color:var(--primary); padding:0.25rem 0.7rem; border-radius:6px;
+            cursor:pointer; font-size:0.8rem; white-space:nowrap; transition:all 0.2s;
+            font-family:'Exo 2',sans-serif;
+        }
+        .copy-mini:hover { background:rgba(0,212,255,0.35); }
+
+        /* WALLET BOX */
+        .wallet-box {
+            background:rgba(0,0,0,0.4); border:1px solid var(--border);
+            border-radius:12px; padding:1rem 1.2rem;
+            font-family:monospace; font-size:0.9rem; word-break:break-all;
+            color:var(--primary); letter-spacing:0.5px;
         }
 
-        .feature-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
+        /* QR */
+        .qr-wrap {
+            text-align:center; margin:1rem 0;
+        }
+        .qr-wrap canvas { border-radius:12px; }
+        .qr-label { color:var(--muted); font-size:0.82rem; margin-top:0.5rem; }
+
+        /* TRANSACTION ITEMS */
+        .tx-item {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:1rem; border-radius:10px; background:rgba(255,255,255,0.025);
+            border-left:3px solid var(--border); margin-bottom:0.6rem;
+            transition:all 0.2s;
+        }
+        .tx-item:hover { background:rgba(255,255,255,0.04); }
+        .tx-item.deposit { border-left-color:var(--success); }
+        .tx-item.trade { border-left-color:var(--primary); }
+        .tx-item.withdraw { border-left-color:var(--danger); }
+        .tx-title { font-weight:600; font-size:0.95rem; }
+        .tx-date { color:var(--muted); font-size:0.8rem; margin-top:0.2rem; }
+        .tx-amt { font-weight:700; font-size:1rem; text-align:right; }
+
+        /* DEPOSIT METHODS */
+        .method-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:0.8rem; }
+        .method-card {
+            background:rgba(255,255,255,0.04); border:2px solid var(--border2);
+            border-radius:12px; padding:1.2rem; text-align:center;
+            cursor:pointer; transition:all 0.25s;
+        }
+        .method-card:hover, .method-card.active {
+            border-color:var(--primary); background:rgba(0,212,255,0.08);
+        }
+        .method-icon { font-size:2rem; margin-bottom:0.4rem; }
+        .method-name { font-weight:600; font-size:0.9rem; }
+        .method-sub { color:var(--muted); font-size:0.78rem; margin-top:0.2rem; }
+
+        /* SCREENSHOT UPLOAD */
+        .upload-area {
+            border:2px dashed var(--border);
+            border-radius:12px; padding:2rem;
+            text-align:center; cursor:pointer;
+            transition:all 0.25s; position:relative;
+        }
+        .upload-area:hover, .upload-area.drag { border-color:var(--primary); background:rgba(0,212,255,0.05); }
+        .upload-area input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+        .upload-icon { font-size:2.5rem; margin-bottom:0.6rem; }
+        .upload-text { color:var(--muted); font-size:0.9rem; }
+        .upload-preview { max-width:100%; border-radius:10px; margin-top:1rem; max-height:200px; object-fit:contain; }
+
+        /* PAIR CARDS */
+        .pair-card {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:0.9rem 1rem; border-radius:10px; background:rgba(255,255,255,0.03);
+            border:1px solid var(--border2); margin-bottom:0.5rem;
+            cursor:pointer; transition:all 0.2s;
+        }
+        .pair-card:hover { border-color:var(--primary); background:rgba(0,212,255,0.05); }
+        .pair-name { font-weight:600; font-size:0.95rem; }
+        .pair-price { color:var(--primary); font-weight:700; font-family:'Rajdhani',sans-serif; font-size:1.1rem; }
+        .pair-change { font-size:0.82rem; margin-top:0.2rem; }
+
+        /* TRADE DIRECTION */
+        .direction-group { display:flex; gap:0.8rem; }
+        .dir-btn {
+            flex:1; padding:0.9rem; border-radius:10px; border:2px solid;
+            font-weight:700; font-size:0.95rem; cursor:pointer;
+            transition:all 0.25s; font-family:'Exo 2',sans-serif;
+        }
+        .dir-buy { border-color:var(--success); color:var(--success); background:rgba(0,255,136,0.06); }
+        .dir-buy:hover { background:rgba(0,255,136,0.15); }
+        .dir-sell { border-color:var(--danger); color:var(--danger); background:rgba(255,51,85,0.06); }
+        .dir-sell:hover { background:rgba(255,51,85,0.15); }
+
+        /* SIDEBAR MENU (mobile) */
+        .sidebar-nav {
+            display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;
+        }
+        .sidebar-nav a {
+            padding:0.5rem 1rem; border-radius:8px; cursor:pointer;
+            background:rgba(255,255,255,0.04); border:1px solid var(--border2);
+            color:var(--muted); font-size:0.88rem; transition:all 0.2s; text-decoration:none;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background:rgba(0,212,255,0.1); border-color:var(--primary); color:var(--primary);
         }
 
-        .feature-card p {
-            color: #a0a0a0;
+        /* TABLE */
+        .data-table { width:100%; border-collapse:collapse; }
+        .data-table th { color:var(--muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; padding:0.8rem 1rem; border-bottom:1px solid var(--border2); text-align:left; }
+        .data-table td { padding:0.9rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.9rem; }
+        .data-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .overflow-x { overflow-x:auto; }
+
+        /* MODAL */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; padding:1rem; }
+        .modal-overlay.open { display:flex; }
+        .modal-box {
+            background:var(--bg2); border:1px solid var(--border);
+            border-radius:20px; padding:2rem; max-width:500px; width:100%;
+            max-height:90vh; overflow-y:auto;
         }
+        .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+        .modal-head h3 { font-family:'Rajdhani',sans-serif; font-size:1.4rem; color:var(--primary); }
+        .close-x { background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer; transition:color 0.2s; }
+        .close-x:hover { color:var(--danger); }
+
+        /* TOAST */
+        .toast {
+            position:fixed; bottom:1.5rem; right:1.5rem; z-index:3000;
+            background:var(--bg2); border:1px solid var(--border);
+            border-radius:10px; padding:0.9rem 1.3rem;
+            transform:translateX(120%); transition:transform 0.3s;
+            max-width:320px; font-size:0.9rem;
+        }
+        .toast.show { transform:translateX(0); }
+        .toast.t-success { border-color:var(--success); }
+        .toast.t-error { border-color:var(--danger); }
+
+        /* SPINNER */
+        .spinner { width:30px; height:30px; border:3px solid var(--border2); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite; margin:1rem auto; }
+
+        /* HEADER AREA */
+        .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.8rem; flex-wrap:wrap; gap:1rem; }
+        .page-title { font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; letter-spacing:2px; }
+
+        /* QUICK ACTIONS */
+        .quick-actions { display:flex; gap:0.8rem; flex-wrap:wrap; }
+
+        /* INACTIVE OVERLAY */
+        .inactive-notice {
+            background:linear-gradient(135deg, rgba(255,51,85,0.1), rgba(255,187,0,0.08));
+            border:1px solid rgba(255,187,0,0.4);
+            border-radius:14px; padding:1.5rem; text-align:center; margin-bottom:1.5rem;
+        }
+        .inactive-notice h3 { color:var(--warning); font-family:'Rajdhani',sans-serif; font-size:1.3rem; margin-bottom:0.5rem; }
+        .inactive-notice p { color:var(--muted); font-size:0.9rem; margin-bottom:1rem; }
+
+        /* PROFILE PAGE */
+        .profile-detail-row {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:0.8rem 0; border-bottom:1px solid var(--border2);
+        }
+        .profile-detail-row:last-child { border-bottom:none; }
+        .pd-label { color:var(--muted); font-size:0.85rem; }
+        .pd-value { font-weight:600; font-size:0.95rem; }
+
+        /* COPY TRADING */
+        .trader-card {
+            background:var(--bg3); border:1px solid var(--border2);
+            border-radius:14px; padding:1.3rem;
+            display:flex; flex-direction:column; gap:0.8rem;
+            transition:all 0.25s;
+        }
+        .trader-card:hover { border-color:var(--primary); transform:translateY(-2px); }
+        .trader-head { display:flex; align-items:center; gap:0.8rem; }
+        .trader-avatar {
+            width:44px; height:44px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.1rem; font-weight:700; color:#fff; font-family:'Rajdhani',sans-serif;
+        }
+        .trader-stats { display:flex; gap:1rem; }
+        .ts-item { text-align:center; }
+        .ts-val { font-weight:700; color:var(--success); font-family:'Rajdhani',sans-serif; }
+        .ts-label { font-size:0.75rem; color:var(--muted); }
+
+        /* RESPONSIVE */
+        @media(max-width:768px) {
+            .nav-links { display:none; }
+            .mobile-btn { display:block; }
+            .hero h1 { font-size:2.2rem; }
+            .grid-2, .stats-grid { grid-template-columns:1fr; }
+            .profile-banner { flex-direction:column; text-align:center; }
+        }
+
+        /* CREDENTIALS SUCCESS */
+        .cred-success {
+            background:linear-gradient(135deg,rgba(0,255,136,0.07),rgba(0,119,255,0.07));
+            border:1px solid rgba(0,255,136,0.3); border-radius:16px; padding:2rem; text-align:center;
+        }
+        .cred-success h3 { font-family:'Rajdhani',sans-serif; color:var(--success); font-size:1.5rem; margin-bottom:0.5rem; }
+
+        .mt-1{margin-top:1rem} .mt-2{margin-top:1.5rem} .mb-1{margin-bottom:1rem}
+        .text-center{text-align:center} .text-muted{color:var(--muted)}
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <div class="logo">💱 ForexPro</div>
-            <ul class="nav-links" id="navLinks">
-                <li><a onclick="showPage('home')" id="navHome">Home</a></li>
-                <li><a onclick="showPage('dashboard')" id="navDashboard" class="hidden">Dashboard</a></li>
-                <li><a onclick="showPage('deposit')" id="navDeposit" class="hidden">Deposit</a></li>
-                <li><a onclick="showPage('trading')" id="navTrading" class="hidden">Trading</a></li>
-                <li><a onclick="showPage('history')" id="navHistory" class="hidden">History</a></li>
-                <li><a onclick="logout()" id="navLogout" class="hidden btn btn-outline" style="padding: 0.5rem 1rem;">Logout</a></li>
-                <li><a onclick="showPage('login')" id="navLogin">Login</a></li>
-                <li><a onclick="showPage('register')" id="navRegister" class="btn" style="padding: 0.5rem 1rem;">Register</a></li>
-            </ul>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
-        </div>
-    </nav>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <div id="toastMessage"></div>
+<!-- NAVIGATION -->
+<nav>
+    <div class="nav-inner">
+        <div class="logo">◈ FOREXPRO</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a onclick="showPage('home')" id="n-home">Home</a></li>
+            <li><a onclick="showPage('dashboard')" id="n-dash" class="hidden">Dashboard</a></li>
+            <li><a onclick="showPage('deposit')" id="n-deposit" class="hidden">Deposit</a></li>
+            <li><a onclick="showPage('trading')" id="n-trading" class="hidden">Trading</a></li>
+            <li><a onclick="showPage('copytrade')" id="n-copy" class="hidden">Copy Trade</a></li>
+            <li><a onclick="showPage('history')" id="n-history" class="hidden">History</a></li>
+            <li><a onclick="showPage('profile')" id="n-profile" class="hidden">Profile</a></li>
+            <li><a onclick="logout()" id="n-logout" class="hidden nav-btn">Logout</a></li>
+            <li><a onclick="showPage('login')" id="n-login">Login</a></li>
+            <li><a onclick="showPage('register')" id="n-register" class="nav-btn">Register</a></li>
+        </ul>
+        <button class="mobile-btn" onclick="toggleMobile()">☰</button>
     </div>
+</nav>
 
-    <!-- ==================== HOME PAGE ==================== -->
-    <div class="page active" id="pageHome">
-        <div class="hero">
-            <h1>Master Forex Trading</h1>
-            <p>Start your investment journey with secure USDT deposits, real-time trading, and advanced analytics.</p>
-            <button class="btn" onclick="showPage('register')">Get Started</button>
-        </div>
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
 
-        <div class="features">
-            <h2 class="text-center" style="color: var(--primary); font-size: 2rem;">Why Choose ForexPro?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>USDT Deposits</h3>
-                    <p>Secure cryptocurrency deposits with instant confirmation system.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Live Trading</h3>
-                    <p>Real-time forex pairs with competitive spreads and instant execution.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Secure Accounts</h3>
-                    <p>Unique ID system with encrypted local storage for maximum security.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Profit Calculator</h3>
-                    <p>Advanced tools to calculate potential returns before you trade.</p>
-                </div>
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="pageHome">
+    <div class="hero fade-up">
+        <h1>MASTER FOREX TRADING</h1>
+        <p>Professional investment platform with USDT deposits, real-time trading, and a powerful referral network.</p>
+        <button class="btn btn-primary" onclick="showPage('register')">Start Trading →</button>
+    </div>
+    <div class="features">
+        <h2 class="section-title">WHY CHOOSE FOREXPRO?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h3>USDT Deposits</h3>
+                <p>Secure TRC20 / ERC20 deposits with manual admin verification for safety.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Live Trading</h3>
+                <p>Trade major forex pairs and commodities with real-time price data.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>Referral Network</h3>
+                <p>Earn commissions by sponsoring new traders. Build your team and income.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure Accounts</h3>
+                <p>Unique ID system with encrypted storage and admin-verified transactions.</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== REGISTER PAGE ==================== -->
-    <div class="page" id="pageRegister">
-        <div class="auth-container">
-            <div class="auth-card animate-fade">
-                <h2>📝 Create Account</h2>
-                <p>Join thousands of traders worldwide</p>
-                
-                <div id="registerForm">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" class="form-input" id="regName" placeholder="Enter your full name">
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" class="form-input" id="regEmail" placeholder="your@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" class="form-input" id="regPhone" placeholder="+1 234 567 890">
-                    </div>
-                    <button class="btn" style="width: 100%;" onclick="registerUser()">Create Account</button>
-                </div>
-
-                <div id="registerSuccess" class="hidden">
-                    <div class="credentials-box animate-fade">
-                        <h3>🎉 Account Created Successfully!</h3>
-                        <p style="color: #a0a0a0; margin-bottom: 1rem;">Save these credentials safely. You cannot recover them!</p>
-                        
-                        <div style="text-align: left;">
-                            <div class="form-group">
-                                <label>Your Unique ID</label>
-                                <div class="cred-item">
-                                    <span id="newUserId"></span>
-                                    <button class="copy-btn" onclick="copyToClipboard('newUserId')">Copy</button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Your Password</label>
-                                <div class="cred-item">
-                                    <span id="newPassword"></span>
-                                    <button class="copy-btn" onclick="copyToClipboard('newPassword')">Copy</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box mt-1">
-                            <h4>⚠️ Important</h4>
-                            <p>Please screenshot or write down these credentials. They cannot be recovered if lost!</p>
-                        </div>
-                        
-                        <button class="btn mt-2" onclick="showPage('login')">Go to Login</button>
-                    </div>
-                </div>
-
-                <p class="mt-2" style="color: #a0a0a0;">
-                    Already have an account? <a onclick="showPage('login')" style="color: var(--primary); cursor: pointer;">Login here</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== LOGIN PAGE ==================== -->
-    <div class="page" id="pageLogin">
-        <div class="auth-container">
-            <div class="auth-card animate-fade">
-                <h2>🔐 Login</h2>
-                <p>Access your trading dashboard</p>
-                
+<!-- ============ REGISTER PAGE ============ -->
+<div class="page" id="pageRegister">
+    <div class="auth-wrap">
+        <div class="auth-card fade-up">
+            <div class="auth-title">📝 CREATE ACCOUNT</div>
+            <p class="auth-sub">Join our global trading community</p>
+            
+            <div id="regForm">
                 <div class="form-group">
-                    <label>User ID</label>
-                    <input type="text" class="form-input" id="loginUserId" placeholder="Enter your User ID">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" class="form-input" id="rName" placeholder="Your full name">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-input" id="rEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-input" id="rPhone" placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sponsor ID <span style="color:var(--muted)">(Optional - enter if referred by someone)</span></label>
+                    <input type="text" class="form-input" id="rSponsor" placeholder="e.g. FX12345678">
                 </div>
                 
-                <button class="btn" style="width: 100%;" onclick="loginUser()">Login</button>
+                <div class="info-box mb-1">
+                    <p class="info-box-title">ℹ️ Important</p>
+                    <p>Your unique ID and password will be generated automatically. Please save them safely after registration.</p>
+                </div>
                 
-                <p class="mt-2" style="color: #a0a0a0;">
-                    Don't have an account? <a onclick="showPage('register')" style="color: var(--primary); cursor: pointer;">Register here</a>
+                <button class="btn btn-primary btn-full" onclick="registerUser()">Create Account</button>
+                <p class="text-center text-muted mt-1" style="font-size:0.9rem">
+                    Already have an account? <a onclick="showPage('login')" style="color:var(--primary);cursor:pointer;">Login here</a>
                 </p>
             </div>
-        </div>
-    </div>
 
-    <!-- ==================== DASHBOARD PAGE ==================== -->
-    <div class="page" id="pageDashboard">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <div>
-                    <h1>Welcome back, <span id="dashName">Trader</span>! 👋</h1>
-                    <p style="color: #a0a0a0;">ID: <span id="dashId"></span></p>
+            <div id="regSuccess" class="hidden cred-success fade-up">
+                <h3>🎉 Account Created!</h3>
+                <p class="text-muted" style="font-size:0.9rem;margin-bottom:1.5rem">Save these credentials — they cannot be recovered!</p>
+                <div class="form-group">
+                    <label class="form-label">Your Unique User ID</label>
+                    <div class="cred-box"><span id="newId"></span><button class="copy-mini" onclick="copyEl('newId')">Copy</button></div>
                 </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn" onclick="showPage('deposit')">💰 Deposit</button>
-                    <button class="btn btn-outline" onclick="showPage('trading')">📈 Trade Now</button>
+                <div class="form-group">
+                    <label class="form-label">Your Password</label>
+                    <div class="cred-box"><span id="newPass"></span><button class="copy-mini" onclick="copyEl('newPass')">Copy</button></div>
                 </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Balance</div>
-                    <div class="stat-value" id="totalBalance">$0.00</div>
-                    <div class="stat-change positive">Available for trading</div>
+                <div class="warn-box mt-1 mb-1">
+                    <p>⚠️ Screenshot these credentials now. They will NOT be shown again.</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Active Investments</div>
-                    <div class="stat-value" id="activeInvestments">$0.00</div>
-                    <div class="stat-change">Currently invested</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Profit/Loss</div>
-                    <div class="stat-value" id="totalProfit">$0.00</div>
-                    <div class="stat-change positive" id="profitChange">+0.00%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Trades</div>
-                    <div class="stat-value" id="totalTrades">0</div>
-                    <div class="stat-change">Completed trades</div>
-                </div>
-            </div>
-
-            <div class="content-grid">
-                <div class="content-card">
-                    <h3>📊 Market Overview</h3>
-                    <div id="marketOverview" style="margin-top: 1rem;">
-                        <div class="pair-card">
-                            <div>
-                                <div class="pair-name">EUR/USD</div>
-                                <div class="pair-change positive">+0.25%</div>
-                            </div>
-                            <div class="pair-price">1.0845</div>
-                        </div>
-                        <div class="pair-card">
-                            <div>
-                                <div class="pair-name">GBP/USD</div>
-                                <div class="pair-change negative">-0.15%</div>
-                            </div>
-                            <div class="pair-price">1.2678</div>
-                        </div>
-                        <div class="pair-card">
-                            <div>
-                                <div class="pair-name">USD/JPY</div>
-                                <div class="pair-change positive">+0.42%</div>
-                            </div>
-                            <div class="pair-price">149.32</div>
-                        </div>
-                        <div class="pair-card">
-                            <div>
-                                <div class="pair-name">XAU/USD</div>
-                                <div class="pair-change positive">+0.85%</div>
-                            </div>
-                            <div class="pair-price">2,345.60</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="content-card">
-                    <h3>📋 Recent Activity</h3>
-                    <div id="recentActivity" style="margin-top: 1rem;">
-                        <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No recent activity</p>
-                    </div>
-                </div>
+                <button class="btn btn-primary btn-full" onclick="showPage('login')">Proceed to Login →</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== DEPOSIT PAGE ==================== -->
-    <div class="page" id="pageDeposit">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h1>💰 Deposit Funds</h1>
-                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
+<!-- ============ LOGIN PAGE ============ -->
+<div class="page" id="pageLogin">
+    <div class="auth-wrap">
+        <div class="auth-card fade-up">
+            <div class="auth-title">🔐 LOGIN</div>
+            <p class="auth-sub">Access your trading dashboard</p>
+            <div class="form-group">
+                <label class="form-label">User ID</label>
+                <input type="text" class="form-input" id="lId" placeholder="e.g. FX12345678">
             </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="lPass" placeholder="Your password"
+                    onkeydown="if(event.key==='Enter')loginUser()">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="loginUser()">Login</button>
+            <p class="text-center text-muted mt-1" style="font-size:0.9rem">
+                Don't have an account? <a onclick="showPage('register')" style="color:var(--primary);cursor:pointer;">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>
 
-            <div class="content-grid">
-                <div class="content-card">
-                    <h3>Choose Payment Method</h3>
-                    <div class="deposit-options">
-                        <div class="deposit-option selected" onclick="selectDepositMethod(this, 'usdt')">
-                            <div class="crypto-icon">💎</div>
-                            <h4>USDT (TRC20)</h4>
-                            <p>Low fees, fast</p>
-                        </div>
-                        <div class="deposit-option" onclick="selectDepositMethod(this, 'usdt_erc')">
-                            <div class="crypto-icon">💎</div>
-                            <h4>USDT (ERC20)</h4>
-                            <p>Ethereum network</p>
-                        </div>
-                        <div class="deposit-option" onclick="selectDepositMethod(this, 'btc')">
-                            <div class="crypto-icon">₿</div>
-                            <h4>Bitcoin</h4>
-                            <p>Secure, widely used</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-2">
-                        <div class="form-group">
-                            <label>Deposit Amount (USD)</label>
-                            <input type="number" class="form-input" id="depositAmount" placeholder="Min $10" min="10">
-                        </div>
-                        
-                        <div class="info-box">
-                            <h4>📋 Payment Instructions</h4>
-                            <p>1. Enter amount above</p>
-                            <p>2. Copy the wallet address</p>
-                            <p>3. Send exact amount from your wallet</p>
-                            <p>4. Click "I have paid" after sending</p>
-                        </div>
-
-                        <div class="text-center mt-2">
-                            <div class="qr-container">
-                                <canvas id="qrCanvas" width="200" height="200"></canvas>
-                            </div>
-                            
-                            <div class="wallet-address" id="walletAddress">
-                                TXYZ1234567890ABCDEF1234567890ABCDEF12
-                            </div>
-                            <button class="copy-btn" onclick="copyToClipboard('walletAddress')">Copy Address</button>
-                        </div>
-
-                        <button class="btn btn-success" style="width: 100%; margin-top: 1rem;" onclick="confirmDeposit()">
-                            ✅ I Have Paid
-                        </button>
-                    </div>
+<!-- ============ DASHBOARD PAGE ============ -->
+<div class="page" id="pageDashboard">
+    <div class="container fade-up">
+        
+        <!-- Profile Banner -->
+        <div class="profile-banner">
+            <div class="avatar" id="dbAvatar">U</div>
+            <div class="profile-info" style="flex:1">
+                <h2 id="dbName">Trader</h2>
+                <p>ID: <strong id="dbId" style="color:var(--primary)"></strong> &nbsp;|&nbsp; Joined: <span id="dbJoined"></span></p>
+                <div class="profile-badges mt-1">
+                    <span class="badge badge-info">Sponsor: <span id="dbSponsor">None</span></span>
+                    <span id="dbStatusBadge" class="badge badge-warning"><span class="status-dot dot-inactive"></span>INACTIVE</span>
+                    <span class="badge badge-info">Activated: <span id="dbActivatedOn">—</span></span>
                 </div>
+            </div>
+            <div class="quick-actions">
+                <button class="btn btn-primary btn-sm" onclick="showPage('deposit')">💰 Deposit</button>
+                <button class="btn btn-outline btn-sm" onclick="showPage('trading')">📈 Trade</button>
+            </div>
+        </div>
 
-                <div class="content-card">
-                    <h3>📋 Deposit History</h3>
-                    <div id="depositHistory">
-                        <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No deposits yet</p>
-                    </div>
-                </div>
+        <!-- Inactive Notice -->
+        <div id="inactiveNotice" class="inactive-notice hidden">
+            <h3>⚠️ Account Inactive</h3>
+            <p>Your account is currently inactive. Make a deposit to activate your account and unlock all features.</p>
+            <button class="btn btn-warning" onclick="showPage('deposit')">Make Deposit to Activate</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Balance</div>
+                <div class="stat-value" id="dbBalance">$0.00</div>
+                <div class="stat-sub">Available to trade</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Investments</div>
+                <div class="stat-value" id="dbInvested">$0.00</div>
+                <div class="stat-sub">Currently invested</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Profit / Loss</div>
+                <div class="stat-value" id="dbProfit">$0.00</div>
+                <div class="stat-sub positive" id="dbProfitPct">+0.00%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed Trades</div>
+                <div class="stat-value" id="dbTrades">0</div>
+                <div class="stat-sub">All time</div>
+            </div>
+        </div>
+
+        <!-- Market + Activity -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">📊 Market Overview</div>
+                <div id="dbMarket"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📋 Recent Activity</div>
+                <div id="dbActivity"><p class="text-muted text-center" style="padding:2rem">No activity yet</p></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== TRADING PAGE ==================== -->
-    <div class="page" id="pageTrading">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h1>📈 Live Trading</h1>
-                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
-            </div>
+<!-- ============ DEPOSIT PAGE ============ -->
+<div class="page" id="pageDeposit">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">💰 DEPOSIT FUNDS</div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('dashboard')">← Back</button>
+        </div>
 
-            <div class="content-grid">
-                <div class="content-card">
-                    <h3>Available Pairs</h3>
-                    <div id="tradingPairs">
-                        <!-- Populated by JS -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Select Payment Method</div>
+                <div class="method-grid" id="methodGrid">
+                    <div class="method-card active" onclick="selectMethod(this,'usdt_trc','TXYZ1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S')">
+                        <div class="method-icon">💎</div>
+                        <div class="method-name">USDT TRC20</div>
+                        <div class="method-sub">Low fees · Fast</div>
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this,'usdt_erc','0xABCDEF1234567890ABCDEF1234567890ABCDEF12')">
+                        <div class="method-icon">💎</div>
+                        <div class="method-name">USDT ERC20</div>
+                        <div class="method-sub">Ethereum network</div>
+                    </div>
+                    <div class="method-card" onclick="selectMethod(this,'btc','bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')">
+                        <div class="method-icon">₿</div>
+                        <div class="method-name">Bitcoin</div>
+                        <div class="method-sub">Secure · Reliable</div>
                     </div>
                 </div>
 
-                <div class="content-card">
-                    <h3>Quick Trade</h3>
+                <hr class="divider">
+
+                <div class="form-group">
+                    <label class="form-label">Deposit Amount (USD) *</label>
+                    <input type="number" class="form-input" id="dAmount" placeholder="Minimum $10" min="10">
+                </div>
+
+                <div class="card" style="margin-bottom:1rem;">
+                    <div class="card-title" style="font-size:1rem">Payment Address</div>
+                    <div class="qr-wrap">
+                        <canvas id="qrCanvas" width="160" height="160"></canvas>
+                        <div class="qr-label">Scan to send payment</div>
+                    </div>
+                    <label class="form-label mt-1">Wallet Address</label>
+                    <div class="wallet-box" id="walletAddr">TXYZ1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S</div>
+                    <button class="copy-mini mt-1" onclick="copyText(document.getElementById('walletAddr').textContent)">📋 Copy Address</button>
+                </div>
+
+                <div class="info-box mb-1">
+                    <p class="info-box-title">📋 Deposit Steps</p>
+                    <p>1. Enter deposit amount above</p>
+                    <p>2. Copy wallet address and send exact amount</p>
+                    <p>3. Take a screenshot of the payment confirmation</p>
+                    <p>4. Upload screenshot below and submit</p>
+                    <p>5. Admin will verify and credit your account</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Upload Payment Screenshot *</label>
+                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('ssFile').click()">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Click to upload screenshot<br><small style="color:var(--muted)">JPG, PNG, PDF accepted</small></div>
+                        <input type="file" id="ssFile" accept="image/*,application/pdf" onchange="handleFileSelect(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+                    </div>
+                    <div id="ssPreview" class="hidden text-center mt-1">
+                        <img id="previewImg" class="upload-preview" src="" alt="Preview">
+                        <p id="previewName" style="color:var(--muted);font-size:0.82rem;margin-top:0.4rem"></p>
+                    </div>
+                </div>
+
+                <button class="btn btn-success btn-full" onclick="submitDeposit()">✅ Submit Deposit Request</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📋 Deposit History</div>
+                <div id="depHistory"><p class="text-muted text-center" style="padding:2rem">No deposits yet</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ TRADING PAGE ============ -->
+<div class="page" id="pageTrading">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">📈 LIVE TRADING</div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('dashboard')">← Back</button>
+        </div>
+        <div id="tradeInactiveWarn" class="hidden inactive-notice">
+            <h3>⚠️ Account Inactive</h3>
+            <p>Please deposit first to activate your account and start trading.</p>
+            <button class="btn btn-warning" onclick="showPage('deposit')">Make Deposit</button>
+        </div>
+        <div id="tradeContent">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Available Pairs</div>
+                    <div id="pairList"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Quick Trade</div>
                     <div class="form-group">
-                        <label>Select Pair</label>
-                        <select class="form-input" id="tradePair">
-                            <option>EUR/USD</option>
-                            <option>GBP/USD</option>
-                            <option>USD/JPY</option>
-                            <option>XAU/USD</option>
-                            <option>USD/CHF</option>
+                        <label class="form-label">Select Pair</label>
+                        <select class="form-input" id="tPair">
+                            <option>EUR/USD</option><option>GBP/USD</option>
+                            <option>USD/JPY</option><option>XAU/USD</option>
+                            <option>USD/CHF</option><option>AUD/USD</option>
+                            <option>BTC/USD</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Amount ($)</label>
-                        <input type="number" class="form-input" id="tradeAmount" placeholder="Enter amount">
+                        <label class="form-label">Amount (USD)</label>
+                        <input type="number" class="form-input" id="tAmount" placeholder="Enter amount">
                     </div>
                     <div class="form-group">
-                        <label>Direction</label>
-                        <div style="display: flex; gap: 1rem;">
-                            <button class="btn btn-success" style="flex: 1;" onclick="placeTrade('buy')">📈 BUY</button>
-                            <button class="btn btn-danger" style="flex: 1;" onclick="placeTrade('sell')">📉 SELL</button>
+                        <label class="form-label">Direction</label>
+                        <div class="direction-group">
+                            <button class="dir-btn dir-buy" onclick="placeTrade('buy')">▲ BUY</button>
+                            <button class="dir-btn dir-sell" onclick="placeTrade('sell')">▼ SELL</button>
                         </div>
+                    </div>
+                    <div id="tradeBalance" class="info-box mt-1">
+                        <p>Available Balance: <strong id="tBalDisplay">$0.00</strong></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== HISTORY PAGE ==================== -->
-    <div class="page" id="pageHistory">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h1>📋 Transaction History</h1>
-                <button class="btn btn-outline" onclick="showPage('dashboard')">← Back to Dashboard</button>
+<!-- ============ COPY TRADING PAGE ============ -->
+<div class="page" id="pageCopytrade">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">🤖 COPY TRADING</div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('dashboard')">← Back</button>
+        </div>
+        <div id="copyInactiveWarn" class="hidden inactive-notice">
+            <h3>⚠️ Account Inactive</h3>
+            <p>Activate your account by making a deposit first.</p>
+            <button class="btn btn-warning" onclick="showPage('deposit')">Make Deposit</button>
+        </div>
+        <div id="copyContent">
+            <p class="text-muted mb-1">Copy the trades of top-performing traders automatically.</p>
+            <div class="grid-3" id="traderList"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ HISTORY PAGE ============ -->
+<div class="page" id="pageHistory">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">📋 TRANSACTION HISTORY</div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('dashboard')">← Back</button>
+        </div>
+        <div class="card">
+            <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap">
+                <button class="btn btn-outline btn-sm" onclick="loadHistory('all')">All</button>
+                <button class="btn btn-outline btn-sm" onclick="loadHistory('deposit')">Deposits</button>
+                <button class="btn btn-outline btn-sm" onclick="loadHistory('trade')">Trades</button>
+                <button class="btn btn-outline btn-sm" onclick="loadHistory('withdraw')">Withdrawals</button>
             </div>
+            <div id="historyList"><p class="text-muted text-center" style="padding:2rem">No transactions yet</p></div>
+        </div>
+    </div>
+</div>
 
-            <div class="content-card">
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <button class="btn btn-outline" onclick="filterHistory('all')">All</button>
-                    <button class="btn btn-outline" onclick="filterHistory('deposit')">Deposits</button>
-                    <button class="btn btn-outline" onclick="filterHistory('trade')">Trades</button>
-                </div>
-                <div id="fullHistory">
-                    <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions yet</p>
-                </div>
+<!-- ============ PROFILE PAGE ============ -->
+<div class="page" id="pageProfile">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">👤 MY PROFILE</div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('dashboard')">← Back</button>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Account Details</div>
+                <div id="profileDetails"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">🤝 Referral Info</div>
+                <div id="referralInfo"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ==================== ADMIN PAGE ==================== -->
-    <div class="page" id="pageAdmin">
-        <div class="dashboard">
-            <div class="dashboard-header">
-                <h1>🔧 Admin Panel</h1>
-                <button class="btn btn-outline" onclick="logout()">Logout</button>
+<!-- ============ ADMIN PAGE ============ -->
+<div class="page" id="pageAdmin">
+    <div class="container fade-up">
+        <div class="page-header">
+            <div class="page-title">🔧 ADMIN PANEL</div>
+            <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="aUsers">0</div>
             </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Users</div>
-                    <div class="stat-value" id="adminTotalUsers">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Deposits</div>
-                    <div class="stat-value" id="adminTotalDeposits">$0.00</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Pending Deposits</div>
-                    <div class="stat-value" id="adminPendingDeposits">0</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Deposited</div>
+                <div class="stat-value" id="aTotalDep">$0</div>
             </div>
-
-            <div class="content-card mt-2">
-                <h3>All Users</h3>
-                <div style="overflow-x: auto;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Balance</th>
-                                <th>Status</th>
-                                <th>Joined</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminUsersTable">
-                        </tbody>
-                    </table>
-                </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Deposits</div>
+                <div class="stat-value" id="aPending">0</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Accounts</div>
+                <div class="stat-value" id="aActive">0</div>
+            </div>
+        </div>
 
-            <div class="content-card mt-2">
-                <h3>Pending Deposits</h3>
-                <div id="adminPendingList">
-                    <p style="color: #a0a0a0; text-align: center; padding: 2rem;">No pending deposits</p>
-                </div>
+        <!-- Pending Deposits -->
+        <div class="card mt-2">
+            <div class="card-title">⏳ Pending Deposit Requests</div>
+            <div id="aPendingList"><p class="text-muted text-center" style="padding:2rem">No pending requests</p></div>
+        </div>
+
+        <!-- All Users -->
+        <div class="card mt-2">
+            <div class="card-title">👥 All Users</div>
+            <div class="overflow-x">
+                <table class="data-table">
+                    <thead><tr>
+                        <th>User ID</th><th>Name</th><th>Email</th>
+                        <th>Sponsor</th><th>Balance</th><th>Status</th><th>Joined</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="aUsersTable"></tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">Title</h3>
-                <button class="close-btn" onclick="closeModal()">×</button>
-            </div>
-            <div id="modalContent"></div>
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="mTitle">Title</h3>
+            <button class="close-x" onclick="closeModal()">×</button>
         </div>
+        <div id="mBody"></div>
     </div>
+</div>
 
-    <script>
-        // ==================== DATA STORAGE ====================
-        // In-memory storage (resets on page reload for demo)
-        // In production, use localStorage with encryption
-        
-        let users = JSON.parse(localStorage.getItem('forex_users')) || {};
-        let transactions = JSON.parse(localStorage.getItem('forex_transactions')) || [];
-        let currentUser = JSON.parse(localStorage.getItem('forex_currentUser')) || null;
-        
-        // Admin credentials (hardcoded for demo)
-        const ADMIN_ID = 'ADMIN001';
-        const ADMIN_PASS = 'admin@123';
+<script>
+// ===== DATA =====
+let users = JSON.parse(localStorage.getItem('fp_users') || '{}');
+let txns  = JSON.parse(localStorage.getItem('fp_txns')  || '[]');
+let me    = JSON.parse(localStorage.getItem('fp_me')    || 'null');
 
-        // Demo wallet addresses
-        const WALLETS = {
-            usdt: 'TXYZ1234567890ABCDEF1234567890ABCDEF12',
-            usdt_erc: '0x1234567890ABCDEF1234567890ABCDEF123456',
-            btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
-        };
+const ADMIN = { id:'ADMIN001', pass:'admin@123' };
 
-        // ==================== UTILITY FUNCTIONS ====================
-        
-        function generateId() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let id = 'FX';
-            for (let i = 0; i < 8; i++) {
-                id += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return id;
+// REPLACE THESE WITH YOUR ACTUAL WALLET ADDRESSES
+const WALLETS = {
+    usdt_trc: 'TXYZ1A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S',
+    usdt_erc: '0xABCDEF1234567890ABCDEF1234567890ABCDEF12',
+    btc: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+};
+
+let curMethod = 'usdt_trc';
+let ssBase64 = null;
+let ssFileName = '';
+
+// ===== UTILS =====
+function uid() {
+    let s='FX'; const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    for(let i=0;i<8;i++) s+=c[Math.floor(Math.random()*c.length)];
+    return s;
+}
+function pwd() {
+    let s=''; const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+    for(let i=0;i<12;i++) s+=c[Math.floor(Math.random()*c.length)];
+    return s;
+}
+function fmt(n) { return '$'+parseFloat(n||0).toFixed(2); }
+function dateStr(d) { return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function dtStr(d) { return new Date(d).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+
+function save() {
+    localStorage.setItem('fp_users', JSON.stringify(users));
+    localStorage.setItem('fp_txns',  JSON.stringify(txns));
+    me ? localStorage.setItem('fp_me', JSON.stringify(me)) : localStorage.removeItem('fp_me');
+}
+
+function toast(msg, type='success') {
+    const t=document.getElementById('toast'), m=document.getElementById('toastMsg');
+    m.textContent=msg; t.className='toast show t-'+type;
+    setTimeout(()=>t.className='toast',3200);
+}
+
+function copyEl(id) { copyText(document.getElementById(id).textContent); }
+function copyText(t) {
+    navigator.clipboard.writeText(t).then(()=>toast('Copied!')).catch(()=>{
+        const el=document.createElement('textarea');el.value=t;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);toast('Copied!');
+    });
+}
+
+// ===== PAGES =====
+function showPage(p) {
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    const el=document.getElementById('page'+p[0].toUpperCase()+p.slice(1));
+    if(el) el.classList.add('active');
+    updateNav();
+    const init={dashboard:initDash,deposit:initDeposit,trading:initTrading,history:()=>loadHistory('all'),admin:initAdmin,profile:initProfile,copytrade:initCopy};
+    if(init[p]) init[p]();
+    window.scrollTo(0,0);
+}
+
+function updateNav() {
+    const li=!!me, adm=me&&me.isAdmin;
+    tog('n-home',li&&!adm); tog('n-dash',!li||adm); tog('n-deposit',!li||adm);
+    tog('n-trading',!li||adm); tog('n-copy',!li||adm); tog('n-history',!li||adm);
+    tog('n-profile',!li||adm); tog('n-logout',!li);
+    tog('n-login',li); tog('n-register',li);
+}
+function tog(id,hide) { document.getElementById(id).classList.toggle('hidden',hide); }
+
+// ===== AUTH =====
+function registerUser() {
+    const name=document.getElementById('rName').value.trim();
+    const email=document.getElementById('rEmail').value.trim();
+    const phone=document.getElementById('rPhone').value.trim();
+    const sponsor=document.getElementById('rSponsor').value.trim().toUpperCase();
+    
+    if(!name||!email||!phone){ toast('Please fill all required fields','error'); return; }
+    
+    // Validate sponsor if provided
+    if(sponsor && !users[sponsor] && sponsor!==ADMIN.id) {
+        toast('Invalid Sponsor ID! Please check and try again.','error'); return;
+    }
+    
+    const id=uid(), pass=pwd();
+    users[id] = {
+        id, name, email, phone, password:pass,
+        sponsor: sponsor||null,
+        balance:0, invested:0, profit:0, trades:0,
+        status:'inactive', activatedAt:null,
+        createdAt:new Date().toISOString()
+    };
+    save();
+    
+    // Notify sponsor (just mark, admin sees it)
+    if(sponsor && users[sponsor]) {
+        users[sponsor].referrals = (users[sponsor].referrals||0)+1;
+        save();
+    }
+    
+    document.getElementById('newId').textContent=id;
+    document.getElementById('newPass').textContent=pass;
+    document.getElementById('regForm').classList.add('hidden');
+    document.getElementById('regSuccess').classList.remove('hidden');
+    toast('Account created successfully!');
+}
+
+function loginUser() {
+    const id=document.getElementById('lId').value.trim();
+    const pass=document.getElementById('lPass').value;
+    if(!id||!pass){ toast('Enter User ID and Password','error'); return; }
+    
+    if(id===ADMIN.id && pass===ADMIN.pass) {
+        me={id:ADMIN.id,name:'Administrator',isAdmin:true}; save();
+        toast('Welcome Admin!'); showPage('admin'); return;
+    }
+    
+    const u=users[id];
+    if(u && u.password===pass) {
+        me=u; save(); toast('Welcome back, '+u.name+'!'); showPage('dashboard');
+    } else {
+        toast('Invalid User ID or Password','error');
+    }
+}
+
+function logout() { me=null; save(); toast('Logged out'); showPage('home'); }
+
+// ===== DASHBOARD =====
+function initDash() {
+    if(!me||me.isAdmin) return;
+    me=users[me.id]||me; // refresh
+    
+    const av=document.getElementById('dbAvatar');
+    av.textContent=me.name[0].toUpperCase();
+    document.getElementById('dbName').textContent=me.name;
+    document.getElementById('dbId').textContent=me.id;
+    document.getElementById('dbJoined').textContent=dateStr(me.createdAt);
+    document.getElementById('dbSponsor').textContent=me.sponsor||'None';
+    document.getElementById('dbBalance').textContent=fmt(me.balance);
+    document.getElementById('dbInvested').textContent=fmt(me.invested);
+    document.getElementById('dbProfit').textContent=fmt(me.profit);
+    document.getElementById('dbTrades').textContent=me.trades;
+    
+    const pEl=document.getElementById('dbProfit');
+    const pct=me.invested>0?((me.profit/me.invested)*100):0;
+    document.getElementById('dbProfitPct').textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';
+    document.getElementById('dbProfitPct').className='stat-sub '+(pct>=0?'positive':'negative');
+    pEl.style.color=me.profit>=0?'var(--success)':'var(--danger)';
+    
+    const isActive=me.status==='active';
+    const sb=document.getElementById('dbStatusBadge');
+    sb.innerHTML=isActive?'<span class="status-dot dot-active"></span>ACTIVE':'<span class="status-dot dot-inactive"></span>INACTIVE';
+    sb.className='badge '+(isActive?'badge-success':'badge-warning');
+    document.getElementById('dbActivatedOn').textContent=me.activatedAt?dtStr(me.activatedAt):'—';
+    document.getElementById('inactiveNotice').classList.toggle('hidden',isActive);
+    
+    // Market mini
+    const pairs=[{p:'EUR/USD',v:1.0845,c:0.25},{p:'GBP/USD',v:1.2678,c:-0.15},{p:'USD/JPY',v:149.32,c:0.42},{p:'XAU/USD',v:2345.6,c:0.85}];
+    document.getElementById('dbMarket').innerHTML=pairs.map(x=>`
+        <div class="pair-card">
+            <div><div class="pair-name">${x.p}</div><div class="pair-change ${x.c>=0?'positive':'negative'}">${x.c>=0?'▲':'▼'} ${Math.abs(x.c)}%</div></div>
+            <div class="pair-price">${x.v}</div>
+        </div>`).join('');
+    
+    // Recent activity
+    const ut=txns.filter(t=>t.userId===me.id).slice(-5).reverse();
+    document.getElementById('dbActivity').innerHTML=ut.length?
+        ut.map(t=>`<div class="tx-item ${t.type}">
+            <div><div class="tx-title">${t.type==='deposit'?'💰 Deposit':t.type==='trade'?'📈 Trade '+t.pair:'💸 Withdrawal'}</div>
+            <div class="tx-date">${dtStr(t.date)}</div></div>
+            <div class="tx-amt ${t.amount>=0?'positive':'negative'}">${fmt(t.amount)}</div>
+        </div>`).join(''):
+        '<p class="text-muted text-center" style="padding:1.5rem">No activity yet</p>';
+}
+
+// ===== DEPOSIT =====
+function selectMethod(el, method, addr) {
+    document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    curMethod=method;
+    document.getElementById('walletAddr').textContent=addr||WALLETS[method];
+    drawQR(addr||WALLETS[method]);
+}
+
+function drawQR(text) {
+    const cv=document.getElementById('qrCanvas'), ctx=cv.getContext('2d');
+    ctx.fillStyle='white'; ctx.fillRect(0,0,160,160);
+    ctx.fillStyle='#000';
+    const sz=12;
+    for(let i=0;i<12;i++) for(let j=0;j<12;j++) if(Math.random()>.5) ctx.fillRect(i*sz+8,j*sz+8,sz-1,sz-1);
+    ctx.fillRect(8,8,40,40); ctx.fillRect(112,8,40,40); ctx.fillRect(8,112,40,40);
+    ctx.fillStyle='white'; ctx.fillRect(14,14,28,28); ctx.fillRect(118,14,28,28); ctx.fillRect(14,118,28,28);
+    ctx.fillStyle='#000'; ctx.fillRect(19,19,18,18); ctx.fillRect(123,19,18,18); ctx.fillRect(19,123,18,18);
+}
+
+function initDeposit() {
+    if(!me) return;
+    document.getElementById('walletAddr').textContent=WALLETS.usdt_trc;
+    drawQR(WALLETS.usdt_trc);
+    ssBase64=null; ssFileName='';
+    document.getElementById('ssPreview').classList.add('hidden');
+    document.getElementById('dAmount').value='';
+    renderDepHistory();
+}
+
+function handleFileSelect(e) {
+    const file=e.target.files[0];
+    if(!file) return;
+    ssFileName=file.name;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+        ssBase64=ev.target.result;
+        if(file.type.startsWith('image/')) {
+            document.getElementById('previewImg').src=ssBase64;
+            document.getElementById('ssPreview').classList.remove('hidden');
         }
+        document.getElementById('previewName').textContent=file.name;
+        toast('Screenshot selected: '+file.name);
+    };
+    reader.readAsDataURL(file);
+}
 
-        function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
-            let pass = '';
-            for (let i = 0; i < 12; i++) {
-                pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return pass;
-        }
+function submitDeposit() {
+    const amt=parseFloat(document.getElementById('dAmount').value);
+    if(!amt||amt<10){ toast('Minimum deposit is $10','error'); return; }
+    if(!ssBase64){ toast('Please upload payment screenshot','error'); return; }
+    
+    const tx={
+        id:'TX'+Date.now(), userId:me.id, type:'deposit',
+        amount:amt, method:curMethod,
+        wallet:WALLETS[curMethod],
+        screenshot:ssBase64, ssName:ssFileName,
+        status:'pending', date:new Date().toISOString()
+    };
+    txns.push(tx); save();
+    toast('Deposit submitted! Admin will verify and credit your account.');
+    document.getElementById('dAmount').value='';
+    ssBase64=null;
+    document.getElementById('ssPreview').classList.add('hidden');
+    renderDepHistory();
+}
 
-        function formatCurrency(amount) {
-            return '$' + parseFloat(amount).toFixed(2);
-        }
+function renderDepHistory() {
+    const deps=txns.filter(t=>t.userId===me.id&&t.type==='deposit').reverse();
+    document.getElementById('depHistory').innerHTML=deps.length?
+        deps.map(d=>`<div class="tx-item deposit">
+            <div><div class="tx-title">💰 ${d.method.toUpperCase()}</div><div class="tx-date">${dtStr(d.date)}</div></div>
+            <div style="text-align:right"><div class="tx-amt positive">${fmt(d.amount)}</div>
+            <span class="badge ${d.status==='completed'?'badge-success':d.status==='pending'?'badge-warning':'badge-danger'}">${d.status.toUpperCase()}</span></div>
+        </div>`).join(''):
+        '<p class="text-muted text-center" style="padding:2rem">No deposits yet</p>';
+}
 
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const msg = document.getElementById('toastMessage');
-            msg.textContent = message;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
+// ===== TRADING =====
+const PAIRS=[{p:'EUR/USD',v:1.0845,c:0.25},{p:'GBP/USD',v:1.2678,c:-0.15},{p:'USD/JPY',v:149.32,c:0.42},{p:'USD/CHF',v:0.8923,c:-0.08},{p:'AUD/USD',v:0.6543,c:0.18},{p:'XAU/USD',v:2345.6,c:0.85},{p:'BTC/USD',v:67543.2,c:2.15}];
 
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Copied to clipboard!');
-            });
-        }
+function initTrading() {
+    if(!me) return;
+    me=users[me.id]||me;
+    const active=me.status==='active';
+    document.getElementById('tradeInactiveWarn').classList.toggle('hidden',active);
+    document.getElementById('tradeContent').classList.toggle('hidden',!active);
+    if(!active) return;
+    document.getElementById('tBalDisplay').textContent=fmt(me.balance);
+    document.getElementById('pairList').innerHTML=PAIRS.map(p=>`
+        <div class="pair-card" onclick="document.getElementById('tPair').value='${p.p}'">
+            <div><div class="pair-name">${p.p}</div><div class="pair-change ${p.c>=0?'positive':'negative'}">${p.c>=0?'▲':'▼'} ${Math.abs(p.c)}%</div></div>
+            <div class="pair-price">${p.v}</div>
+        </div>`).join('');
+}
 
-        function saveData() {
-            localStorage.setItem('forex_users', JSON.stringify(users));
-            localStorage.setItem('forex_transactions', JSON.stringify(transactions));
-            if (currentUser) {
-                localStorage.setItem('forex_currentUser', JSON.stringify(currentUser));
-            } else {
-                localStorage.removeItem('forex_currentUser');
-            }
-        }
+function placeTrade(dir) {
+    me=users[me.id]||me;
+    if(me.status!=='active'){ toast('Activate your account first','error'); return; }
+    const pair=document.getElementById('tPair').value;
+    const amt=parseFloat(document.getElementById('tAmount').value);
+    if(!amt||amt<=0){ toast('Enter valid amount','error'); return; }
+    if(amt>me.balance){ toast('Insufficient balance','error'); return; }
+    
+    const profit=(Math.random()-0.38)*amt*0.12;
+    me.balance-=amt; me.invested+=amt; me.profit+=profit; me.trades+=1;
+    if(profit>=0){ me.balance+=amt+profit; me.invested-=amt; }
+    users[me.id]=me;
+    txns.push({id:'TX'+Date.now(),userId:me.id,type:'trade',pair,direction:dir,amount:amt,profit,status:'completed',date:new Date().toISOString()});
+    save();
+    document.getElementById('tAmount').value='';
+    document.getElementById('tBalDisplay').textContent=fmt(me.balance);
+    toast(`${dir.toUpperCase()} ${pair} | Profit: ${fmt(profit)}`, profit>=0?'success':'error');
+}
 
-        // ==================== NAVIGATION ====================
-        
-        function showPage(pageName) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            
-            // Show requested page
-            const page = document.getElementById('page' + pageName.charAt(0).toUpperCase() + pageName.slice(1));
-            if (page) page.classList.add('active');
-            
-            // Update nav
-            updateNavigation();
-            
-            // Page specific init
-            if (pageName === 'dashboard') initDashboard();
-            if (pageName === 'deposit') initDeposit();
-            if (pageName === 'trading') initTrading();
-            if (pageName === 'history') initHistory();
-            if (pageName === 'admin') initAdmin();
-            
-            window.scrollTo(0, 0);
-        }
+// ===== COPY TRADING =====
+const TRADERS=[
+    {name:'Alex_FX',roi:'+124%',winrate:'78%',followers:892,color:'#00d4ff',min:100},
+    {name:'ProPips99',roi:'+89%',winrate:'72%',followers:634,color:'#00ff88',min:50},
+    {name:'GoldTrader',roi:'+67%',winrate:'69%',followers:421,color:'#ffbb00',min:200},
+];
 
-        function updateNavigation() {
-            const isLoggedIn = currentUser !== null;
-            const isAdmin = currentUser && currentUser.id === ADMIN_ID;
-            
-            document.getElementById('navHome').classList.toggle('hidden', isLoggedIn && !isAdmin);
-            document.getElementById('navDashboard').classList.toggle('hidden', !isLoggedIn || isAdmin);
-            document.getElementById('navDeposit').classList.toggle('hidden', !isLoggedIn || isAdmin);
-            document.getElementById('navTrading').classList.toggle('hidden', !isLoggedIn || isAdmin);
-            document.getElementById('navHistory').classList.toggle('hidden', !isLoggedIn || isAdmin);
-            document.getElementById('navLogout').classList.toggle('hidden', !isLoggedIn);
-            document.getElementById('navLogin').classList.toggle('hidden', isLoggedIn);
-            document.getElementById('navRegister').classList.toggle('hidden', isLoggedIn);
-        }
+function initCopy() {
+    if(!me) return;
+    me=users[me.id]||me;
+    const active=me.status==='active';
+    document.getElementById('copyInactiveWarn').classList.toggle('hidden',active);
+    document.getElementById('copyContent').classList.toggle('hidden',!active);
+    if(!active) return;
+    document.getElementById('traderList').innerHTML=TRADERS.map(t=>`
+        <div class="trader-card">
+            <div class="trader-head">
+                <div class="trader-avatar" style="background:linear-gradient(135deg,${t.color},#0077ff)">${t.name[0]}</div>
+                <div><div style="font-weight:700">${t.name}</div><div style="color:var(--muted);font-size:0.82rem">${t.followers} followers</div></div>
+            </div>
+            <div class="trader-stats">
+                <div class="ts-item"><div class="ts-val" style="color:var(--success)">${t.roi}</div><div class="ts-label">ROI</div></div>
+                <div class="ts-item"><div class="ts-val">${t.winrate}</div><div class="ts-label">Win Rate</div></div>
+                <div class="ts-item"><div class="ts-val" style="color:var(--warning)">$${t.min}</div><div class="ts-label">Min Copy</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="copytrade('${t.name}',${t.min})">Copy This Trader</button>
+        </div>`).join('');
+}
 
-        // ==================== AUTH FUNCTIONS ====================
-        
-        function registerUser() {
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            
-            if (!name || !email || !phone) {
-                showToast('Please fill all fields!', 'error');
-                return;
-            }
-            
-            const userId = generateId();
-            const password = generatePassword();
-            
-            users[userId] = {
-                id: userId,
-                name: name,
-                email: email,
-                phone: phone,
-                password: password,
-                balance: 0,
-                invested: 0,
-                profit: 0,
-                trades: 0,
-                status: 'active',
-                createdAt: new Date().toISOString()
-            };
-            
-            saveData();
-            
-            // Show credentials
-            document.getElementById('newUserId').textContent = userId;
-            document.getElementById('newPassword').textContent = password;
-            document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('registerSuccess').classList.remove('hidden');
-            
-            showToast('Account created successfully!');
-        }
+function copytrade(name, min) {
+    me=users[me.id]||me;
+    if(me.balance<min){ toast('Minimum $'+min+' required to copy '+name,'error'); return; }
+    toast('Now copying '+name+'! Auto-trades will be placed in your account.','success');
+}
 
-        function loginUser() {
-            const userId = document.getElementById('loginUserId').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            
-            if (!userId || !password) {
-                showToast('Please enter both User ID and Password!', 'error');
-                return;
-            }
-            
-            // Admin login
-            if (userId === ADMIN_ID && password === ADMIN_PASS) {
-                currentUser = {
-                    id: ADMIN_ID,
-                    name: 'Administrator',
-                    isAdmin: true
-                };
-                saveData();
-                showToast('Welcome Admin!');
-                showPage('admin');
-                return;
-            }
-            
-            // User login
-            const user = users[userId];
-            if (user && user.password === password) {
-                currentUser = user;
-                saveData();
-                showToast('Welcome back, ' + user.name + '!');
-                showPage('dashboard');
-            } else {
-                showToast('Invalid User ID or Password!', 'error');
-            }
-        }
+// ===== HISTORY =====
+function loadHistory(type) {
+    let data=txns.filter(t=>t.userId===me.id);
+    if(type!=='all') data=data.filter(t=>t.type===type);
+    data=data.reverse();
+    document.getElementById('historyList').innerHTML=data.length?
+        data.map(t=>`<div class="tx-item ${t.type}">
+            <div><div class="tx-title">${t.type==='deposit'?'💰 Deposit':t.type==='trade'?'📈 Trade '+t.pair:'💸 Withdrawal'}</div>
+            <div class="tx-date">${dtStr(t.date)}</div>${t.direction?`<div style="color:var(--muted);font-size:0.82rem">Direction: ${t.direction.toUpperCase()}</div>`:''}
+            </div>
+            <div style="text-align:right">
+                <div class="tx-amt ${t.amount>=0?'positive':'negative'}">${fmt(t.amount)}</div>
+                ${t.profit!==undefined?`<div style="font-size:0.85rem;${t.profit>=0?'color:var(--success)':'color:var(--danger)'}">${t.profit>=0?'+':''}${fmt(t.profit)} P/L</div>`:''}
+                <span class="badge ${t.status==='completed'?'badge-success':t.status==='pending'?'badge-warning':'badge-danger'}">${t.status}</span>
+            </div>
+        </div>`).join(''):
+        '<p class="text-muted text-center" style="padding:2rem">No transactions found</p>';
+}
 
-        function logout() {
-            currentUser = null;
-            saveData();
-            showToast('Logged out successfully!');
-            showPage('home');
-        }
+// ===== PROFILE =====
+function initProfile() {
+    if(!me||me.isAdmin) return;
+    me=users[me.id]||me;
+    const refs=Object.values(users).filter(u=>u.sponsor===me.id).length;
+    document.getElementById('profileDetails').innerHTML=`
+        <div class="profile-detail-row"><span class="pd-label">Full Name</span><span class="pd-value">${me.name}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">User ID</span><span class="pd-value" style="color:var(--primary);font-family:monospace">${me.id}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">Email</span><span class="pd-value">${me.email}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">Phone</span><span class="pd-value">${me.phone}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">Account Status</span>
+            <span class="badge ${me.status==='active'?'badge-success':'badge-warning'}">${me.status.toUpperCase()}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">Registered On</span><span class="pd-value">${dateStr(me.createdAt)}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">Activated On</span><span class="pd-value">${me.activatedAt?dtStr(me.activatedAt):'Not activated yet'}</span></div>
+    `;
+    document.getElementById('referralInfo').innerHTML=`
+        <div class="info-box mb-1">
+            <p class="info-box-title">Your Referral/Sponsor Code</p>
+            <div class="cred-box mt-1"><span style="color:var(--primary);font-weight:700">${me.id}</span>
+            <button class="copy-mini" onclick="copyText('${me.id}')">Copy</button></div>
+            <p style="margin-top:0.7rem;font-size:0.85rem">Share this ID with others. When they register with your ID as Sponsor, you earn referral benefits.</p>
+        </div>
+        <div class="profile-detail-row"><span class="pd-label">Your Sponsor</span><span class="pd-value" style="color:var(--primary)">${me.sponsor||'None (Direct)'}</span></div>
+        <div class="profile-detail-row"><span class="pd-label">People You Referred</span><span class="pd-value">${refs}</span></div>
+    `;
+}
 
-        // ==================== DASHBOARD ====================
-        
-        function initDashboard() {
-            if (!currentUser || currentUser.isAdmin) return;
-            
-            document.getElementById('dashName').textContent = currentUser.name;
-            document.getElementById('dashId').textContent = currentUser.id;
-            document.getElementById('totalBalance').textContent = formatCurrency(currentUser.balance);
-            document.getElementById('activeInvestments').textContent = formatCurrency(currentUser.invested);
-            document.getElementById('totalProfit').textContent = formatCurrency(currentUser.profit);
-            document.getElementById('totalTrades').textContent = currentUser.trades;
-            
-            // Update profit color
-            const profitEl = document.getElementById('totalProfit');
-            const changeEl = document.getElementById('profitChange');
-            if (currentUser.profit >= 0) {
-                profitEl.style.color = 'var(--success)';
-                changeEl.className = 'stat-change positive';
-                changeEl.textContent = '+' + ((currentUser.profit / (currentUser.invested || 1)) * 100).toFixed(2) + '%';
-            } else {
-                profitEl.style.color = 'var(--danger)';
-                changeEl.className = 'stat-change negative';
-                changeEl.textContent = ((currentUser.profit / (currentUser.invested || 1)) * 100).toFixed(2) + '%';
-            }
-            
-            // Recent activity
-            const userTx = transactions.filter(t => t.userId === currentUser.id).slice(-5);
-            const activityDiv = document.getElementById('recentActivity');
-            
-            if (userTx.length === 0) {
-                activityDiv.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No recent activity</p>';
-            } else {
-                activityDiv.innerHTML = userTx.map(t => `
-                    <div class="transaction-item ${t.type}">
-                        <div class="tx-info">
-                            <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade' : '💸 Withdrawal'}</h4>
-                            <p>${new Date(t.date).toLocaleDateString()}</p>
-                        </div>
-                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
-                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // ==================== DEPOSIT ====================
-        
-        let selectedMethod = 'usdt';
-        
-        function selectDepositMethod(el, method) {
-            document.querySelectorAll('.deposit-option').forEach(o => o.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedMethod = method;
-            
-            // Update wallet address
-            document.getElementById('walletAddress').textContent = WALLETS[method];
-            
-            // Generate new QR
-            generateQR(WALLETS[method]);
-        }
-
-        function generateQR(text) {
-            const canvas = document.getElementById('qrCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            // Simple visual representation (not real QR)
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, 200, 200);
-            ctx.fillStyle = 'black';
-            
-            // Draw a pattern that looks like QR
-            const size = 20;
-            for (let i = 0; i < 10; i++) {
-                for (let j = 0; j < 10; j++) {
-                    if (Math.random() > 0.5) {
-                        ctx.fillRect(i * size + 10, j * size + 10, size - 2, size - 2);
-                    }
-                }
-            }
-            
-            // Draw position markers
-            ctx.fillRect(10, 10, 50, 50);
-            ctx.fillRect(140, 10, 50, 50);
-            ctx.fillRect(10, 140, 50, 50);
-            ctx.fillStyle = 'white';
-            ctx.fillRect(20, 20, 30, 30);
-            ctx.fillRect(150, 20, 30, 30);
-            ctx.fillRect(20, 150, 30, 30);
-        }
-
-        function initDeposit() {
-            if (!currentUser) return;
-            document.getElementById('walletAddress').textContent = WALLETS.usdt;
-            generateQR(WALLETS.usdt);
-            updateDepositHistory();
-        }
-
-        function confirmDeposit() {
-            const amount = parseFloat(document.getElementById('depositAmount').value);
-            
-            if (!amount || amount < 10) {
-                showToast('Minimum deposit is $10!', 'error');
-                return;
-            }
-            
-            const tx = {
-                id: 'TX' + Date.now(),
-                userId: currentUser.id,
-                type: 'deposit',
-                amount: amount,
-                method: selectedMethod,
-                status: 'pending',
-                date: new Date().toISOString(),
-                wallet: WALLETS[selectedMethod]
-            };
-            
-            transactions.push(tx);
-            saveData();
-            
-            showToast('Deposit request submitted! Admin will verify shortly.');
-            updateDepositHistory();
-            document.getElementById('depositAmount').value = '';
-        }
-
-        function updateDepositHistory() {
-            const userDeposits = transactions.filter(t => t.userId === currentUser.id && t.type === 'deposit');
-            const div = document.getElementById('depositHistory');
-            
-            if (userDeposits.length === 0) {
-                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No deposits yet</p>';
-                return;
-            }
-            
-            div.innerHTML = userDeposits.slice(-10).reverse().map(d => `
-                <div class="transaction-item deposit">
-                    <div class="tx-info">
-                        <h4>💰 ${d.method.toUpperCase()} Deposit</h4>
-                        <p>${new Date(d.date).toLocaleString()}</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="tx-amount positive">+${formatCurrency(d.amount)}</div>
-                        <span class="badge ${d.status === 'completed' ? 'badge-success' : d.status === 'pending' ? 'badge-warning' : 'badge-danger'}">
-                            ${d.status}
-                        </span>
+// ===== ADMIN =====
+function initAdmin() {
+    if(!me||!me.isAdmin){ showPage('home'); return; }
+    const uList=Object.values(users);
+    document.getElementById('aUsers').textContent=uList.length;
+    const totDep=txns.filter(t=>t.type==='deposit'&&t.status==='completed').reduce((s,t)=>s+t.amount,0);
+    document.getElementById('aTotalDep').textContent=fmt(totDep);
+    const pend=txns.filter(t=>t.type==='deposit'&&t.status==='pending');
+    document.getElementById('aPending').textContent=pend.length;
+    document.getElementById('aActive').textContent=uList.filter(u=>u.status==='active').length;
+    
+    // Pending deposits
+    document.getElementById('aPendingList').innerHTML=pend.length?
+        pend.map(t=>{
+            const u=users[t.userId];
+            const hasImg=t.screenshot&&t.screenshot.startsWith('data:image');
+            return `<div class="tx-item deposit" style="flex-wrap:wrap;gap:1rem;align-items:flex-start">
+                <div style="flex:1">
+                    <div class="tx-title">💰 ${t.method.toUpperCase()} — ${u?u.name:'Unknown'}</div>
+                    <div class="tx-date">User: ${t.userId} &nbsp;|&nbsp; ${dtStr(t.date)}</div>
+                    <div style="color:var(--muted);font-size:0.82rem;margin-top:0.3rem">Wallet: ${t.wallet}</div>
+                    ${t.ssName?`<div style="color:var(--muted);font-size:0.82rem">File: ${t.ssName}</div>`:''}
+                </div>
+                <div style="text-align:right;display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end">
+                    <div class="tx-amt positive">${fmt(t.amount)}</div>
+                    ${hasImg?`<button class="btn btn-outline btn-sm" onclick="viewSS('${t.id}')">👁 View Screenshot</button>`:'<span style="color:var(--muted);font-size:0.82rem">No screenshot</span>'}
+                    <div style="display:flex;gap:0.5rem">
+                        <button class="btn btn-success btn-sm" onclick="approveDeposit('${t.id}')">✓ Approve</button>
+                        <button class="btn btn-danger btn-sm" onclick="rejectDeposit('${t.id}')">✗ Reject</button>
                     </div>
                 </div>
-            `).join('');
+            </div>`;
+        }).join(''):
+        '<p class="text-muted text-center" style="padding:2rem">No pending deposits</p>';
+    
+    // Users table
+    document.getElementById('aUsersTable').innerHTML=uList.map(u=>`<tr>
+        <td style="font-family:monospace;color:var(--primary)">${u.id}</td>
+        <td>${u.name}</td><td>${u.email}</td>
+        <td style="color:var(--primary)">${u.sponsor||'—'}</td>
+        <td>${fmt(u.balance)}</td>
+        <td><span class="badge ${u.status==='active'?'badge-success':'badge-warning'}">${u.status.toUpperCase()}</span></td>
+        <td>${dateStr(u.createdAt)}</td>
+        <td>
+            <button class="btn btn-outline btn-sm" onclick="editUser('${u.id}')">✏️ Edit</button>
+        </td>
+    </tr>`).join('');
+}
+
+function viewSS(txId) {
+    const tx=txns.find(t=>t.id===txId);
+    if(!tx||!tx.screenshot) return;
+    openModal('Payment Screenshot',`<img src="${tx.screenshot}" style="width:100%;border-radius:10px"><p style="color:var(--muted);font-size:0.85rem;margin-top:0.7rem">File: ${tx.ssName||'screenshot'}<br>Amount: ${fmt(tx.amount)}<br>User: ${tx.userId}</p>`);
+}
+
+function approveDeposit(txId) {
+    const tx=txns.find(t=>t.id===txId);
+    if(!tx) return;
+    tx.status='completed';
+    if(users[tx.userId]) {
+        users[tx.userId].balance+=tx.amount;
+        if(users[tx.userId].status!=='active') {
+            users[tx.userId].status='active';
+            users[tx.userId].activatedAt=new Date().toISOString();
         }
+    }
+    save(); toast('✅ Deposit approved! Account activated.'); initAdmin();
+}
 
-        // ==================== TRADING ====================
-        
-        const tradingPairs = [
-            { pair: 'EUR/USD', price: 1.0845, change: 0.25 },
-            { pair: 'GBP/USD', price: 1.2678, change: -0.15 },
-            { pair: 'USD/JPY', price: 149.32, change: 0.42 },
-            { pair: 'USD/CHF', price: 0.8923, change: -0.08 },
-            { pair: 'AUD/USD', price: 0.6543, change: 0.18 },
-            { pair: 'USD/CAD', price: 1.3542, change: -0.22 },
-            { pair: 'XAU/USD', price: 2345.60, change: 0.85 },
-            { pair: 'BTC/USD', price: 67543.20, change: 2.15 }
-        ];
+function rejectDeposit(txId) {
+    const tx=txns.find(t=>t.id===txId);
+    if(!tx) return;
+    tx.status='rejected'; save(); toast('Deposit rejected','error'); initAdmin();
+}
 
-        function initTrading() {
-            const container = document.getElementById('tradingPairs');
-            container.innerHTML = tradingPairs.map(p => `
-                <div class="pair-card" onclick="selectPair('${p.pair}')">
-                    <div>
-                        <div class="pair-name">${p.pair}</div>
-                        <div class="pair-change ${p.change >= 0 ? 'positive' : 'negative'}">
-                            ${p.change >= 0 ? '▲' : '▼'} ${Math.abs(p.change)}%
-                        </div>
-                    </div>
-                    <div class="pair-price">${p.price.toFixed(p.pair.includes('XAU') || p.pair.includes('BTC') ? 2 : 4)}</div>
-                </div>
-            `).join('');
-        }
+function editUser(uid) {
+    const u=users[uid];
+    if(!u) return;
+    openModal('Edit User: '+u.name,`
+        <div class="form-group"><label class="form-label">Balance ($)</label>
+        <input type="number" class="form-input" id="eu-bal" value="${u.balance}" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Account Status</label>
+        <select class="form-input" id="eu-status">
+            <option value="inactive" ${u.status==='inactive'?'selected':''}>Inactive</option>
+            <option value="active" ${u.status==='active'?'selected':''}>Active</option>
+        </select></div>
+        <button class="btn btn-primary btn-full" onclick="saveUserEdit('${uid}')">Save Changes</button>
+    `);
+}
 
-        function selectPair(pair) {
-            document.getElementById('tradePair').value = pair;
-        }
+function saveUserEdit(uid) {
+    const bal=parseFloat(document.getElementById('eu-bal').value)||0;
+    const status=document.getElementById('eu-status').value;
+    if(users[uid]) {
+        users[uid].balance=bal; users[uid].status=status;
+        if(status==='active' && !users[uid].activatedAt) users[uid].activatedAt=new Date().toISOString();
+    }
+    save(); toast('User updated!'); closeModal(); initAdmin();
+}
 
-        function placeTrade(direction) {
-            const pair = document.getElementById('tradePair').value;
-            const amount = parseFloat(document.getElementById('tradeAmount').value);
-            
-            if (!amount || amount <= 0) {
-                showToast('Please enter a valid amount!', 'error');
-                return;
-            }
-            
-            if (amount > currentUser.balance) {
-                showToast('Insufficient balance!', 'error');
-                return;
-            }
-            
-            // Simulate trade
-            const profit = (Math.random() - 0.4) * amount * 0.1; // 60% win rate simulation
-            
-            currentUser.balance -= amount;
-            currentUser.invested += amount;
-            currentUser.profit += profit;
-            currentUser.trades += 1;
-            
-            if (profit > 0) {
-                currentUser.balance += amount + profit;
-                currentUser.invested -= amount;
-            }
-            
-            const tx = {
-                id: 'TX' + Date.now(),
-                userId: currentUser.id,
-                type: 'trade',
-                pair: pair,
-                direction: direction,
-                amount: amount,
-                profit: profit,
-                status: 'completed',
-                date: new Date().toISOString()
-            };
-            
-            transactions.push(tx);
-            saveData();
-            
-            showToast(`Trade ${direction.toUpperCase()} ${pair} completed! Profit: ${formatCurrency(profit)}`, 
-                profit >= 0 ? 'success' : 'error');
-            
-            document.getElementById('tradeAmount').value = '';
-            initDashboard();
-        }
+// ===== MODAL =====
+function openModal(title, html) {
+    document.getElementById('mTitle').textContent=title;
+    document.getElementById('mBody').innerHTML=html;
+    document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
-        // ==================== HISTORY ====================
-        
-        function initHistory() {
-            const userTx = transactions.filter(t => t.userId === currentUser.id).reverse();
-            const div = document.getElementById('fullHistory');
-            
-            if (userTx.length === 0) {
-                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions yet</p>';
-                return;
-            }
-            
-            div.innerHTML = userTx.map(t => `
-                <div class="transaction-item ${t.type}">
-                    <div class="tx-info">
-                        <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade ' + t.pair : '💸 Withdrawal'}</h4>
-                        <p>${new Date(t.date).toLocaleString()}</p>
-                        ${t.direction ? `<p>Direction: ${t.direction.toUpperCase()}</p>` : ''}
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
-                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
-                        </div>
-                        ${t.profit ? `<div class="${t.profit >= 0 ? 'positive' : 'negative'}">${t.profit >= 0 ? '+' : ''}${formatCurrency(t.profit)}</div>` : ''}
-                        <span class="badge ${t.status === 'completed' ? 'badge-success' : 'badge-warning'}">${t.status}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+// ===== MOBILE NAV =====
+function toggleMobile() {
+    const nl=document.getElementById('navLinks');
+    if(nl.style.display==='flex') { nl.style.display=''; return; }
+    Object.assign(nl.style,{display:'flex',flexDirection:'column',position:'absolute',
+        top:'64px',left:'0',right:'0',background:'var(--bg)',padding:'1rem',
+        borderBottom:'1px solid var(--border)',zIndex:'999',gap:'0.3rem'});
+}
 
-        function filterHistory(type) {
-            let filtered = transactions.filter(t => t.userId === currentUser.id);
-            if (type !== 'all') {
-                filtered = filtered.filter(t => t.type === type);
-            }
-            
-            const div = document.getElementById('fullHistory');
-            if (filtered.length === 0) {
-                div.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No transactions found</p>';
-                return;
-            }
-            
-            div.innerHTML = filtered.reverse().map(t => `
-                <div class="transaction-item ${t.type}">
-                    <div class="tx-info">
-                        <h4>${t.type === 'deposit' ? '💰 Deposit' : t.type === 'trade' ? '📈 Trade ' + t.pair : '💸 Withdrawal'}</h4>
-                        <p>${new Date(t.date).toLocaleString()}</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="tx-amount ${t.amount >= 0 ? 'positive' : 'negative'}">
-                            ${t.amount >= 0 ? '+' : ''}${formatCurrency(t.amount)}
-                        </div>
-                        <span class="badge ${t.status === 'completed' ? 'badge-success' : 'badge-warning'}">${t.status}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ==================== ADMIN PANEL ====================
-        
-        function initAdmin() {
-            if (!currentUser || !currentUser.isAdmin) {
-                showPage('home');
-                return;
-            }
-            
-            // Stats
-            document.getElementById('adminTotalUsers').textContent = Object.keys(users).length;
-            
-            const totalDeposits = transactions
-                .filter(t => t.type === 'deposit' && t.status === 'completed')
-                .reduce((sum, t) => sum + t.amount, 0);
-            document.getElementById('adminTotalDeposits').textContent = formatCurrency(totalDeposits);
-            
-            const pending = transactions.filter(t => t.type === 'deposit' && t.status === 'pending').length;
-            document.getElementById('adminPendingDeposits').textContent = pending;
-            
-            // Users table
-            const tbody = document.getElementById('adminUsersTable');
-            tbody.innerHTML = Object.values(users).map(u => `
-                <tr>
-                    <td>${u.id}</td>
-                    <td>${u.name}</td>
-                    <td>${u.email}</td>
-                    <td>${formatCurrency(u.balance)}</td>
-                    <td><span class="badge badge-success">${u.status}</span></td>
-                    <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-                </tr>
-            `).join('');
-            
-            // Pending deposits
-            const pendingDiv = document.getElementById('adminPendingList');
-            const pendingTx = transactions.filter(t => t.status === 'pending');
-            
-            if (pendingTx.length === 0) {
-                pendingDiv.innerHTML = '<p style="color: #a0a0a0; text-align: center; padding: 2rem;">No pending deposits</p>';
-            } else {
-                pendingDiv.innerHTML = pendingTx.map(t => {
-                    const u = users[t.userId];
-                    return `
-                        <div class="transaction-item deposit" style="margin-bottom: 1rem;">
-                            <div class="tx-info">
-                                <h4>💰 ${t.method.toUpperCase()} - ${u ? u.name : 'Unknown'}</h4>
-                                <p>ID: ${t.userId}</p>
-                                <p>${new Date(t.date).toLocaleString()}</p>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="tx-amount positive">+${formatCurrency(t.amount)}</div>
-                                <button class="btn btn-success" style="margin-top: 0.5rem; padding: 0.3rem 1rem; font-size: 0.9rem;" 
-                                    onclick="approveDeposit('${t.id}')">Approve</button>
-                                <button class="btn btn-danger" style="margin-top: 0.5rem; padding: 0.3rem 1rem; font-size: 0.9rem;" 
-                                    onclick="rejectDeposit('${t.id}')">Reject</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-        }
-
-        function approveDeposit(txId) {
-            const tx = transactions.find(t => t.id === txId);
-            if (tx) {
-                tx.status = 'completed';
-                if (users[tx.userId]) {
-                    users[tx.userId].balance += tx.amount;
-                }
-                saveData();
-                showToast('Deposit approved!');
-                initAdmin();
-            }
-        }
-
-        function rejectDeposit(txId) {
-            const tx = transactions.find(t => t.id === txId);
-            if (tx) {
-                tx.status = 'rejected';
-                saveData();
-                showToast('Deposit rejected!');
-                initAdmin();
-            }
-        }
-
-        // ==================== MODAL ====================
-        
-        function openModal(title, content) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalContent').innerHTML = content;
-            document.getElementById('modal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
-
-        // ==================== MOBILE MENU ====================
-        
-        function toggleMobileMenu() {
-            const nav = document.getElementById('navLinks');
-            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
-            nav.style.position = 'absolute';
-            nav.style.top = '60px';
-            nav.style.left = '0';
-            nav.style.right = '0';
-            nav.style.flexDirection = 'column';
-            nav.style.background = 'var(--bg-dark)';
-            nav.style.padding = '1rem';
-        }
-
-        // ==================== INITIALIZATION ====================
-        
-        window.onload = function() {
-            // Check if already logged in
-            if (currentUser) {
-                if (currentUser.isAdmin) {
-                    showPage('admin');
-                } else {
-                    // Refresh user data from storage
-                    if (users[currentUser.id]) {
-                        currentUser = users[currentUser.id];
-                        saveData();
-                    }
-                    showPage('dashboard');
-                }
-            } else {
-                showPage('home');
-            }
-        };
-
-        // Close modal on outside click
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-    </script>
+// ===== INIT =====
+window.onload=()=>{
+    if(me) {
+        if(me.isAdmin) showPage('admin');
+        else { me=users[me.id]||me; save(); showPage('dashboard'); }
+    } else showPage('home');
+};
+</script>
 </body>
 </html>
